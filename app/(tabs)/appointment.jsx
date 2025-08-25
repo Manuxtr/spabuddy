@@ -11,23 +11,27 @@ export default function BookAp() {
 
   const [date,setDate]=useState(new Date());
   const [showPicker,setShowPicker]=useState(false);
-  const [mode,setMode]=useState("date")
+  const [mode,setMode]=useState("date");
+  const [name,setName]=useState("");
+  const [phone,setPhone]=useState("");
+  const [address,setAddress]=useState("");
+  const [requests,setRequests]=useState("");
+
 
 
   // constant to handle date selection
   const onChange=(event,userDate)=>{
     const currentDate=userDate || date;
     setDate(currentDate);
-    setShowPicker(false) 
-
+    setShowPicker(false) ;
   }
-    const ShowDatepicker=()=>{
-    showMode("date")
-  };
-
   const showMode=(currentMode)=>{
     setShowPicker(true);
     setMode(currentMode)
+  };
+
+  const ShowDatepicker=()=>{
+    showMode("date")
   };
   const ShowTimepicker=()=>{
     showMode("time")
@@ -47,6 +51,8 @@ export default function BookAp() {
                   <View style={{justifyContent:"center"}}>
                     <Text style={mainStyles.inputText}>Name:</Text>
                     <TextInput
+                    value={name}
+                    onChangeText={(text) => setName(text)}
                     style={mainStyles.loginForm}
                     placeholder="Enter your name here"
                     />
@@ -61,6 +67,8 @@ export default function BookAp() {
                   <View style={{justifyContent:"center"}}>
                     <Text style={mainStyles.inputText}>Phone:</Text>
                     <TextInput
+                    value={phone}
+                    onChangeText={(text) => setPhone(text)}
                     style={mainStyles.loginForm}
                     placeholder="Enter your phone here"
                     />
@@ -68,6 +76,8 @@ export default function BookAp() {
                   <View style={{justifyContent:"center"}}>
                     <Text style={mainStyles.inputText}>Address:</Text>
                     <TextInput
+                    value={address}
+                    onChangeText={(text) => setAddress(text)}
                     style={mainStyles.loginForm}
                     placeholder="Enter your Address here"
                     />
@@ -103,6 +113,8 @@ export default function BookAp() {
                     <View style={{justifyContent:"center"}}>
                     <Text style={mainStyles.inputText}>Special request:</Text>
                     <TextInput
+                    value={requests}
+                    onChangeText={(text) => setRequests(text)}
                     style={mainStyles.SpecialRequest}
                     placeholder="enter your special request "
                     />
@@ -111,7 +123,7 @@ export default function BookAp() {
 
                 <View style={{paddingHorizontal:10,}}>
                 <TouchableOpacity  style={{ height:55,backgroundColor:themeColors.darkGreen,padding:5, borderRadius: 100,  justifyContent:"center", alignItems: "center" }}>
-                  <Link href={("/(tabs)")} >
+                  <Link href={("/(tabs)/appointment-history")} >
                   <Text className="text-2xl text-bold text-white font-mono font-extrabold">Book Appointment</Text></Link>
                 </TouchableOpacity>
             </View>

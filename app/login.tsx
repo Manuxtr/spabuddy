@@ -1,7 +1,7 @@
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import { Link } from "expo-router";
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
@@ -16,7 +16,8 @@ export default function Login() {
               className="text-emerald-700 ">SPA BUDDY</Text>
               <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500">Best  in selfcare!</Text>
             </View>
-            <View style={mainStyles.inputTextview}>
+           <ScrollView style={{display:"flex", paddingTop:120}}>
+             <View style={mainStyles.inputTextview}>
               <View>
                 <TextInput
                 style={mainStyles.loginForm}
@@ -54,6 +55,7 @@ export default function Login() {
 
                     
           </View>
+           </ScrollView>
           
         </SafeAreaView>
    </SafeAreaProvider>
