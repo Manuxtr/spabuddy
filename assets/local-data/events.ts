@@ -35,7 +35,7 @@ export const myevents =[
     img:require("../../public/images/lashes.jpg")
     },
     {
-    id:"CBjuieeuiosdoi91",
+    id:"CBjuieeuiosd9hhgi91",
     title:"Lash Tech",
     img:require("../../public/images/lashes.jpg")
     },
