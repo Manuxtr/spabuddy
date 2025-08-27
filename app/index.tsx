@@ -1,25 +1,41 @@
 
 import { themeColors } from "@/utilities/maincolors.utils";
 import { Link } from "expo-router";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { screenWidth } from "./(tabs)";
 import MyStack from "@/navigation/StackNavigator";
+import {useFonts} from "expo-font"
+
 
 export default function IndexHome() {
+
+  const [fontsLoaded]=useFonts({
+    "Raleway-Light":require("../assets/fonts/Raleway-Light.ttf"),
+    "Raleway-Regular":require("../assets/fonts/Raleway-Regular.ttf"),
+    "CutOutsFLF":require("../assets/fonts/CutOutsFLF.ttf"),
+    "CFNuclearWar-Regular":require("../assets/fonts/CFNuclearWar-Regular.ttf"),
+    "Chocolate Bar Demo":require("../assets/fonts/Chocolate Bar Demo.otf")
+  });
+
+  if (!fontsLoaded){
+    return null
+  };
+
+
   return (
       <SafeAreaProvider>
        <SafeAreaView style={{flex: 1, paddingVertical:10,display:"flex",justifyContent:"space-evenly"}}>
             <View>
               <Text 
-                    style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"FiraSans-MediumItalic",position:"fixed",top:0}}
+                    style={{fontSize:50, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
                     className="text-emerald-700 ">SPA BUDDY</Text>
-                <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
+                <Text  className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
             </View>
            
                 <View className=" border-emerald-500"
                   style={{paddingHorizontal:5}}>
-                  <Text className="text-2xl font-bold bg-emerald-600 text-white text-justify font-mono">AT SPA BUDDY SELFCARE JUST GOT BETTER YOU CAN EXPLORE AND BOOK SELFCARE TREATMENTS IN MINUTES! FROM CUTE HAIRCUTS TO UNFORGETTABLE HAIR REVAMPS OR DEEP TISSUE MASSAGE TO REJUVENATING FACIALS,YOUR NEXT PAMPARING SESSION IS JUST A TAP AWAY!.
+                  <Text style={landPageStyle.landingText} className=" bg-emerald-600  ">AT SPA BUDDY SELFCARE JUST GOT BETTER YOU CAN EXPLORE AND BOOK SELFCARE TREATMENTS IN MINUTES! FROM CUTE HAIRCUTS TO UNFORGETTABLE HAIR REVAMPS  DEEP TISSUE MASSAGE AND REJUVENATING FACIALS,YOUR NEXT PAMPARING SESSION IS JUST A TAP AWAY!
                   </Text>
                 </View>
               <View className="bg-emerald-950">
@@ -37,7 +53,7 @@ export default function IndexHome() {
               <View style={{paddingHorizontal:10,}}>
                 <TouchableOpacity  style={{ height:55,backgroundColor:themeColors.darkGreen,padding:5, borderRadius: 100,  justifyContent:"center", alignItems: "center" }}>
                   <Link href={("/login")} >
-                  <Text className="text-2xl text-bold text-white font-mono font-extrabold">GET STARTED</Text></Link>
+                  <Text style={landPageStyle.landingText} className="text-2xl text-bold text-white font-mono font-extrabold">GET STARTED</Text></Link>
                 </TouchableOpacity>
             </View>
              
@@ -46,6 +62,18 @@ export default function IndexHome() {
     </SafeAreaProvider>
   );
 }
+
+const landPageStyle=StyleSheet.create({
+  landingText:{
+    fontFamily:"Raleway-Regular",
+    fontSize:24,
+    color:"white",
+    fontWeight:500,
+    textAlign:"center"
+  },
+
+});
+
 
 
 

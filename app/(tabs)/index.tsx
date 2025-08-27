@@ -27,14 +27,14 @@ export default function Index() {
             <View style={{}}>
                 <View>
                  <Text 
-                    style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"FiraSans-MediumItalic",position:"fixed",top:0}}
+                    style={{fontSize:50, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo"}}
                     className="text-emerald-700 ">SPA BUDDY</Text>
                   <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
                 </View>
               </View>
 
 
-            <FlatList style={{}}
+            <FlatList 
           data={myevents}
           ItemSeparatorComponent={Seperator}
           renderItem={({item}) =>{
@@ -54,7 +54,7 @@ export default function Index() {
                 </View>
                 <View style={{}}>
                   <Link href={"/(tabs)/appointment"} className="text-center text-emerald-500 ">
-                   <Text className="text-3xl text-center">{item.title}</Text>
+                   <Text className="text-2xl text-center">{item.title}</Text>
                   </Link>
                 </View> 
               </View>

@@ -4,8 +4,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaProvider } from "react-native-safe-area-context";
-// import {formatTimestampToDate} from "@utilities\date-formater.utils";
 
 export default function BookAp() {
 
@@ -16,6 +16,25 @@ export default function BookAp() {
   const [phone,setPhone]=useState("");
   const [address,setAddress]=useState("");
   const [requests,setRequests]=useState("");
+  const [services,setServices]=useState("")
+  const [gender,setGender]=useState("")
+
+  // for dropdown list of services
+  const servicesOptions=[
+    {label:"Mens Cut",value:"Mens cut"},
+    {label:"Womens cut",value:"Womens cute"},
+    {label:"Nail Tech",value:"Nail Tech"},
+    {label:"MakeOvers",value:"Makeovers"},
+    {label:"Spa Sessions",value:"Spa Sessions"},
+    {label:"Lash Tech",value:"Lash Tech"},
+
+  ];
+
+  // for drop down gender
+  const userGender=[
+    {label:"Male",value:"Male"},
+    {label:"Female",value:"Female"}
+  ]
 
 
 
@@ -42,7 +61,7 @@ export default function BookAp() {
       <SafeAreaView style={{flex: 1, paddingVertical:10,display:"flex",justifyContent:"space-between"}}>
           <View>
             <Text 
-                    style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"FiraSans-MediumItalic",position:"fixed",top:0}}
+                    style={{fontSize:50, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
                     className="text-emerald-700 ">SPA BUDDY</Text>
             <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
          </View>
@@ -58,11 +77,10 @@ export default function BookAp() {
                     />
                   </View>
                   <View style={{justifyContent:"center"}}>
-                    <Text style={mainStyles.inputText}>Services:</Text>
-                    <TextInput
-                    style={mainStyles.loginForm}
-                    placeholder="Select Services"
-                    />
+                    <Text style={mainStyles.inputText}> Select Services:</Text>
+                    <RNPickerSelect items={servicesOptions}
+                    onValueChange={(item) =>setServices(item)}
+                    value={services}/>
                   </View>
                   <View style={{justifyContent:"center"}}>
                     <Text style={mainStyles.inputText}>Phone:</Text>
@@ -83,10 +101,13 @@ export default function BookAp() {
                     />
                   </View>
                   <View style={{justifyContent:"center"}}>
-                    <Text style={mainStyles.inputText}>Gender:</Text>
-                    <TextInput
-                    style={mainStyles.loginForm}
-                    placeholder="Select gender"
+                    <Text style={mainStyles.inputText}> Select Gender:</Text>
+                    <RNPickerSelect
+                    items={userGender}
+                    onValueChange={(item) =>setGender(item)}
+                    value={gender}
+
+
                     />
                   </View>
                   <View style={{justifyContent:"center",padding:10}}>
