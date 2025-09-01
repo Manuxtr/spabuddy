@@ -9,6 +9,7 @@ import { StyleSheet } from "react-native";
 
 
 
+
 export default function Login() {
     const [fontsLoaded]=useFonts({
       "Raleway-Light":require("../assets/fonts/Raleway-Light.ttf"),
@@ -46,30 +47,43 @@ export default function Login() {
                 placeholder="Password"/>
                </View>
 
-              <View style={{paddingHorizontal:10, marginTop:40}}>
-                <TouchableOpacity  style={{ height:55,backgroundColor:themeColors.darkGreen,padding:5, borderRadius: 100,  justifyContent:"center", alignItems: "center" }}>
-                <Link href={("/(tabs)")} >
-                <Text style={LoginPageStyle.loginText} className="text-2xl text-bold text-white font-mono font-extrabold">Log in</Text></Link>
-                </TouchableOpacity>
-              </View>
+                <View style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:30}}>           
+                 <Link href={("/(tabs)")} >
+                    <View>
+                      <Text style={{
+                        fontFamily:"Raleway-Regular",
+                        fontSize:30,
+                        color:"white",
+                        fontWeight:800,
+                       textAlign:"center"
+                      }} >Log in
+                      </Text>
+                    </View>  
+                 </Link>           
+                </View>
 
               <View style={{marginTop:20,alignItems:"center"}}>
                 <Link href={("/passwordreset")}>
-                <Text  className="text-2xl font-bold">Forgot Password?</Text>
+                <View>
+                  <Text  className="text-2xl font-bold">Forgot Password?</Text>
+                </View>
                 </Link>
               </View>
-
-              <View style={{paddingHorizontal:10,marginTop:140}}>
-                  <TouchableOpacity  style={{ height:55,backgroundColor:themeColors.lightGreen,padding:5, borderRadius: 100,  justifyContent:"center", alignItems: "center" }}>
-                  <Link href={("/signup")} >
-                  <Text style={LoginPageStyle.loginText} className="text-2xl text-bold text-white font-mono font-extrabold">Create new account</Text></Link>
-                </TouchableOpacity>
-            </View>
-
-
-
-                    
-          </View>
+                <View style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:120}}>           
+                 <Link href={("/signup")} >
+                    <View>
+                      <Text style={{
+                        fontFamily:"Raleway-Regular",
+                        fontSize:30,
+                        color:"white",
+                        fontWeight:800,
+                       textAlign:"center"
+                      }} >Create Account
+                      </Text>
+                    </View>  
+                 </Link>           
+                </View>
+              </View>
            </ScrollView>
           
         </SafeAreaView>
@@ -87,5 +101,6 @@ const LoginPageStyle=StyleSheet.create({
     fontWeight:500,
     textAlign:"center"
   },
+
 
 });

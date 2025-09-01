@@ -36,21 +36,15 @@ export const mainStyles=StyleSheet.create({
         width:"100%",
         borderWidth:1,
         borderColor:themeColors.darkGreen,
-        paddingHorizontal:106,
-        paddingVertical:30,
+        // paddingHorizontal:106,
+        paddingVertical:15,
         borderRadius:10,
     },
     dateandtimepicker:{
         backgroundColor:themeColors.darkGreen,
         borderRadius:8,
-        paddingHorizontal:16,
+        paddingHorizontal:6,
         paddingVertical:20,
-        width:100
-     },
-     pickerView:{
-        
-
-     },
-    
-
+        width:100,
+        height:55},
 })

@@ -22,7 +22,7 @@ function Seperator() {
 export default function Index() {
   return (
      <SafeAreaProvider>
-        <SafeAreaView >
+        <SafeAreaView style={{flex:1}} >
           <View >
             <View style={{}}>
                 <View>
@@ -31,15 +31,17 @@ export default function Index() {
                     className="text-emerald-700 ">SPA BUDDY</Text>
                   <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
                 </View>
-              </View>
+            </View>
 
 
             <FlatList 
-          data={myevents}
-          ItemSeparatorComponent={Seperator}
-          renderItem={({item}) =>{
+            data={myevents}
+            contentContainerStyle={{paddingBottom:112
+            }}
+            ItemSeparatorComponent={Seperator}
+            renderItem={({item}) =>{
             return(
-              <View className="gap-10">
+              <View className="">
                 <View>
                   <Image
                     source={item.img}
@@ -52,7 +54,7 @@ export default function Index() {
                     }}
                 />
                 </View>
-                <View style={{}}>
+                <View style={{ justifyContent:"center",alignItems:"center",paddingTop:15,marginBottom:1}}>
                   <Link href={"/(tabs)/appointment"} className="text-center text-emerald-500 ">
                    <Text className="text-2xl text-center">{item.title}</Text>
                   </Link>
