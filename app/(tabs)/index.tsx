@@ -36,7 +36,7 @@ export default function Index() {
 
             <FlatList 
             data={myevents}
-            contentContainerStyle={{paddingBottom:112
+            contentContainerStyle={{paddingBottom:120
             }}
             ItemSeparatorComponent={Seperator}
             renderItem={({item}) =>{

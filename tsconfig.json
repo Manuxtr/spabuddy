@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-, "app/login.tsx", "navigation/StackNavigator.tsx", "app/(tabs)/appointment.jsx", "utilities/dateformater.utils.jsx"  ]
+, "app/login.tsx", "navigation/StackNavigator.tsx", "app/(tabs)/appointment.jsx", "utilities/dateformater.utils.jsx", "app/(tabs)/appointment-history.jsx"  ]
 }

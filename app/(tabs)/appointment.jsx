@@ -1,11 +1,11 @@
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Link } from "expo-router";
+import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { db } from "../../config/firebase.config";
 
 
 export default function BookAp() {
@@ -17,8 +17,10 @@ export default function BookAp() {
   const [phone,setPhone]=useState("");
   const [address,setAddress]=useState("");
   const [requests,setRequests]=useState("");
-  const [services,setServices]=useState("")
-  const [gender,setGender]=useState("")
+  const [services,setServices]=useState("");
+  const [gender,setGender]=useState("");
+  const [email,setEmail]=useState("");
+  const [loading,setLoading]=useState(false)
 
   // for dropdown list of services
   const servicesOptions=[
@@ -57,10 +59,51 @@ export default function BookAp() {
     showMode("time")
   };
 
+  const handleBooking= async () => {
+    setLoading(true);
+    try {
+      const docRef=addDoc(collection(db,"bookings"),{
+      name:name,
+      phone:phone,
+      email:email,
+      address:address,
+      requests:requests,
+      gender:gender,
+      services:services,
+      date:date.toLocaleString()
+      });
+
+      setLoading(false)
+      Alert.alert(
+        "ALERT",
+        "Booking Successful",
+        [
+          {text:"Okay"},
+          {
+            text:"return",
+            onPress:()=> console.log("back to home")
+          }
+        ]
+      )
+      setName(""),
+      setPhone(""),
+      setEmail(""),
+      setAddress(""),
+      setRequests(""),
+      setGender(""),
+      setServices(""),
+      setDate("")
+    } catch (error) {
+      console.log("an error occured",error)
+      
+    }
+
+  }
+
   return (
 
-     <SafeAreaProvider> 
-        <KeyboardAvoidingView style={{flex:1}}
+      <KeyboardAvoidingView style={{flex:1}}
+      //  <SafeAreaProvider> 
         behavior={Platform.OS==="ios"? "padding":"height"}>
         <SafeAreaView style={{display:"flex",justifyContent:"space-between"}}>
           <ScrollView>
@@ -93,8 +136,8 @@ export default function BookAp() {
                 <View style={{justifyContent:"center"}}>
                 <Text style={mainStyles.inputText}>Email:</Text>
                 <TextInput
-                value={phone}
-                onChangeText={(text) => setPhone(text)}
+                value={email}
+                onChangeText={(text) => setEmail(text)}
                 style={mainStyles.loginForm}
                 placeholder="Enter your email here"
                 />
@@ -142,7 +185,6 @@ export default function BookAp() {
                   style={mainStyles.loginForm}
                   onChangeText={()=>setShowPicker(true)}>
                   <Text className="text-2xl text-emerald-500">Appointment Date & Time:</Text>
-                  <Text className="text-3xl font-bold">{date.toLocaleDateString()}</Text>
                   {showPicker && (
                   <DateTimePicker
                   testID="dateTimePicker"
@@ -162,26 +204,26 @@ export default function BookAp() {
             </View>
 
             <View style={{paddingHorizontal:10, paddingBottom:20}}>
-              <View style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:30}}>           
-                <Link href={("/(tabs)/appointment-history")} >
-                  <View>
-                    <Text style={{
-                        fontFamily:"Raleway-Regular",
-                        fontSize:30,
-                        color:"white",
-                        fontWeight:800,
-                       textAlign:"center"
-                      }} >Book Appointment
-                    </Text>
-                    </View>  
-                </Link>           
-              </View>
+              <TouchableOpacity onPress={
+                name.length > 6 &&
+                phone.length > 5
+                ?handleBooking : () => {}}
+               style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:30}}>           
+                <Text style={{
+                  fontFamily:"Raleway-Regular",
+                  fontSize:30,
+                  color:"white",
+                  fontWeight:800,
+                 textAlign:"center"
+                 }} >Book Appointment
+                </Text>  
+                {loading === true && <ActivityIndicator size="large" color="red"/>}     
+              </TouchableOpacity>
             </View>
           </ScrollView> 
         </SafeAreaView>
+   {/* </SafeAreaProvider> */}
      </KeyboardAvoidingView> 
-   </SafeAreaProvider>
-
   );
 }
 

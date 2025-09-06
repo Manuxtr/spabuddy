@@ -1,4 +1,4 @@
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -8,11 +8,12 @@ export default function Settings() {
   return (
     <SafeAreaProvider>
           <SafeAreaView>
+            <ScrollView>
               <View>
-                <Text 
-                  style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"FiraSans-MediumItalic",position:"fixed",top:0}}
-                  className="text-emerald-700 ">SPA BUDDY</Text>
-                <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
+              <Text 
+                style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
+                className="text-emerald-700 ">SPA BUDDY</Text>
+              <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
             </View>
             <View className="flex items-center p-20 ">
               <Image
@@ -23,12 +24,12 @@ export default function Settings() {
               <Text className="font-bold text-lg">Boma Jaja</Text>
               <Text className="text-stone-800 tracking-widest">@bomajj</Text>
             </View>
-            <View className="flex p-3 rounded-md  ">
-              <View className="flex flex-row justify-between">
+            <View className="flex p-3 rounded-md " style={{marginHorizontal:20}}>
+              <View className="flex flex-row justify-evenly mb-3">
                 <Text className="text-stone-800 tracking-wider text-lg">Account Email:</Text>
                 <Text className="text-stone-800 tracking-wider text-md">bomajaja@gmail.com</Text>
               </View>
-               <View className="flex flex-row justify-between">
+               <View className="flex flex-row justify-evenly mb-3">
                 <Text className="text-stone-800 tracking-wider text-lg">phone:</Text>
                 <Text className="text-stone-800 tracking-wider text-md">0908273483</Text>
               </View>
@@ -46,6 +47,7 @@ export default function Settings() {
               </Pressable>
 
             </View>
+            </ScrollView>
           </SafeAreaView>
         </SafeAreaProvider>
     

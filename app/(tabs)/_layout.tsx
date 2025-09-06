@@ -33,7 +33,7 @@ export default function _Layout(){
             <Tabs.Screen
                 name="appointment-history"
                 options={{
-                    title: "AP History",
+                    title: "Appointment History",
                     headerShown: true,
                     tabBarIcon: ({}) => <MaterialCommunityIcons name="folder-settings-outline" size={24} color="black" />
                     
