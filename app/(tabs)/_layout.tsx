@@ -8,8 +8,9 @@ import { Tabs } from "expo-router";
 export default function _Layout(){
     return(
         <Tabs
-        screenOptions={{
-            tabBarActiveTintColor:"green"
+        screenOptions= {{
+            tabBarActiveTintColor:"green",
+            headerShown:false
         }}>
 
             <Tabs.Screen
@@ -48,11 +49,6 @@ export default function _Layout(){
                     tabBarIcon: ({}) => <MaterialIcons name="perm-data-setting" size={24} color="black" />
                     
                 }}/>
-
-
-
-
-
         </Tabs>
     )
 }

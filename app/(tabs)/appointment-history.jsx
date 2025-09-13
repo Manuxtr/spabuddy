@@ -3,6 +3,8 @@ import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { Modal } from "react-native";
+
 
 
 
@@ -10,6 +12,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 export default function APhistory() {
   const [aphistory,setAPhistory]=useState([]);
   const [expandText,setExpandText]=useState(false);
+  const [modalVisible,setModalVisible]=useState(false);
 
   // useeffect to get appointments from database
   useEffect(() =>{
@@ -29,60 +32,99 @@ if (aphistory.length > 0) {
 
     return (
     <SafeAreaProvider>
-      <SafeAreaView style={{flex:1}}>
-          <View>
-            <Text 
-              style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
-              className="text-emerald-700 ">SPA BUDDY</Text>
-            <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
+      <SafeAreaView style={{flex:1,paddingHorizontal:5}}>
+        <View>
+          <Text 
+            style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
+            className="text-emerald-700 ">SPA BUDDY</Text>
+          <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
         </View>
         <FlatList
-        data={aphistory}
-        renderItem={({item}) => {
-         return(
-          <View style={{height:350,width:"100%",backgroundColor:"white",padding:10,gap:2,borderWidth:5,borderColor:"green", paddingHorizontal:10}}>
-            <Text className="text-2xl font-bold ">Name: {item.data.name}</Text>
-            <Text className="text-2xl font-bold ">Phone: {item.data.phone}</Text>
-            <Text className="text-2xl font-bold ">Email: {item.data.email}</Text>
-              <Pressable onPress={() => setExpandText(!expandText)}>
-             {expandText 
-             ? 
-             <Text className="text-2xl font-bold">Address: {item.data.address}</Text>
-              :
-              <Text className="text-2xl font-bold">Address: {item.data.address.slice(0,24)}..</Text>
-              }
-           </Pressable>
-            {/* <Text className="text-2xl font-bold">Address:{item.data.address}</Text> */}
-           <Pressable onPress={() => setExpandText(!expandText)}>
-             {expandText 
-             ? 
-             <Text className="text-2xl font-bold ">Requests: {item.data.requests}</Text>
-              :
-              <Text className="text-2xl font-bold ">Requests: {item.data.requests.slice(0,24)}..</Text>
-            }
-           </Pressable>
-            <Text className="text-2xl font-bold">Gender: {item.data.gender}</Text>
-            <Text className="text-2xl font-bold">Services: {item.data.services}</Text>
-            <Text className="text-2xl font-bold">Date: {item.data.date.toLocaleString()}</Text>
-          
-
-            
-          </View>
-         )
-        }}
-        keyExtractor={(item) => item.id}
-        />
+          showsHorizontalScrollIndicator={false}
+          data={aphistory}
+          renderItem={({item}) => {
+          return(
+            <View style={{
+              height:350,
+              width:"100%",
+              padding:4,
+              backgroundColor:"#C0C2C9",
+              borderWidth:2,
+              borderColor:"green", 
+              borderRadius:5,
+              marginVertical:9,
+              shadowColor:"green",
+              shadowOffset:{width:6,height:5},
+              shadowOpacity:0.25,
+              shadowRadius:3.84,
+             }} >
+              <View>
+                <Text className="text-3xl font-extrabold text-emerald-700 text-center mb-3" >Appointment Details</Text>
+              </View>
+              <View className="flex-row  gap-6">
+                <Text className="text-2xl font-semibold">Name:</Text>
+                <Text className="text-2xl  ">{item.data.name}</Text>
+              </View>
+              <View className="flex-row  gap-6">
+                <Text className="text-2xl font-semibold">Phone:</Text>
+                <Text className="text-2xl  ">{item.data.phone}</Text>
+              </View>
+              <View className="flex-row  gap-6">
+                <Text className="text-2xl font-semibold">Email:</Text>
+                <Text className="text-2xl  ">{item.data.email}</Text>
+              </View>
+              <View className="flex-row  gap-6">
+                <Text className="text-2xl font-semibold">Gender:</Text>
+                <Text className="text-2xl  ">{item.data.gender}</Text>
+              </View>
+              <View className="flex-row  gap-6">
+                <Text className="text-2xl font-semibold">Services:</Text>
+                <Text className="text-2xl  ">{item.data.services}</Text>
+              </View>
+              <View className="flex-row  gap-6">
+                <Text className="text-2xl font-semibold">Date:</Text>
+                <Text className="text-2xl ">{item.data.date.toLocaleString()}</Text>
+              </View>
+              <View style={{flexDirection:"row",gap:6}}>
+                <Text className="text-2xl font-bold flex flex-row justify-between" >Address:</Text>
+                <Pressable onPress={() => setExpandText(!expandText)}>
+                {expandText 
+               ? 
+                <Text className="text-2xl ">{item.data.address}</Text>
+                :
+                <Text className="text-2xl ">{item.data.address.slice(0,24)}..</Text>
+                }
+              </Pressable>
+              </View>
+              <View style={{flexDirection:"row",display:"flex",gap:2,flexWrap:"wrap"}}>
+                <Text className="text-2xl font-bold " >Requests:</Text>
+                <Pressable onPress={() => setExpandText(!expandText)}>
+                {expandText 
+               ? 
+                <Text className="text-2xl ">{item.data.requests}</Text>
+                :
+                <Text className="text-2xl ">{item.data.requests.slice(0,24)}..</Text>
+                }
+                </Pressable>
+              </View>
+              
+            </View>
+           
+           )
+           }}
+            keyExtractor={(item) => item.id}
+          />
       </SafeAreaView>
     </SafeAreaProvider>
+      
+    );
     
-  );
-  
-} else {
-  return(
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.emptyWrapper}> 
-        <ActivityIndicator size="large" color="green"/>
-      </SafeAreaView>
+  } else {
+    return(
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.emptyWrapper}> 
+          <ActivityIndicator size="large" color="green"/>
+        </SafeAreaView>
     </SafeAreaProvider>
   )
 }
