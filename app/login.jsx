@@ -88,7 +88,7 @@ export default function Login() {
     : "height"
    }
    style={mainStyles.wrapper}>  
-   <View  style={{flex: 1, paddingVertical:60,display:"flex"}}>
+   <View  style={{flex: 1, paddingVertical:3,display:"flex"}}>
       <Text 
         style={{ fontSize:50, fontWeight:"bold", textAlign:"center",fontFamily:"Chocolate Bar Demo"}}
         className="text-emerald-700 ">SPA BUDDY</Text>
@@ -148,7 +148,7 @@ export default function Login() {
 
                 
                 
-                <View style={{marginTop:20,alignItems:"center"}}>
+                <View style={{marginTop:2,alignItems:"center"}}>
                   <Link href={("/passwordreset")}>
                   <View>
                   {isLoading ? <ActivityIndicator size="small" color="white"/>

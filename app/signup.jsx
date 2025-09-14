@@ -59,20 +59,19 @@ validationSchema:signUpValidation
   });
 
   return (
-   <KeyboardAvoidingView
-     style={mainStyles.wrapper}   
+   <KeyboardAvoidingView  
       behavior={Platform.OS === "ios" ? "padding" 
         : "height"
       }
-      
+      style={mainStyles.wrapper}
       >
-     <View style={{flex: 1, paddingVertical:10,display:"flex",marginTop:Platform.OS === "android" ? StatusBar.currentHeight : 60 }}>
+     <View style={{flex:1,display:"flex", paddingVertical:3 }}>
         <Text 
-          style={{fontSize:40, fontWeight:"bold", textAlign:"center",fontFamily:"FiraSans-MediumItalic"}}
+          style={{fontSize:50, fontWeight:"bold", textAlign:"center",fontFamily:"FiraSans-MediumItalic"}}
           className="text-emerald-700 ">SPA BUDDY</Text>
           <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500">Best  in selfcare!</Text>
       </View>
-      <ScrollView style={{display:"flex", paddingTop:12}}>
+      <ScrollView style={{display:"flex",paddingTop:12}}>
         <View style={mainStyles.inputTextview}>
 
                <Text style={mainStyles.bodyText}>Create new account</Text>
@@ -137,7 +136,7 @@ validationSchema:signUpValidation
                 }
                </View>}
 
-        <View style={{paddingHorizontal:10, marginTop:40}}>
+        <View style={{ marginTop:2}}>
                 
           {!errors.passwordConfirmation && !errors.email && touched.passwordConfirmation &&
           <TouchableOpacity onPress={handleSubmit}  style={{ height:55,backgroundColor:themeColors.darkGreen,padding:5, borderRadius: 100,  justifyContent:"center", alignItems: "center" }}>

@@ -9,7 +9,7 @@ export const mainStyles=StyleSheet.create({
         borderWidth:2,
         borderColor:themeColors.darkGreen,
         paddingHorizontal:16,
-        paddingVertical:20,
+        paddingVertical:16,
         fontSize:16,
         borderRadius:15,
         
@@ -27,19 +27,15 @@ export const mainStyles=StyleSheet.create({
     inputTextview:{
         flex:1,
         display:"flex",
-        gap:9,
-        paddingVertical:10,
+        gap:2,
         paddingHorizontal:5,
-        paddingTop:30
+        paddingBottom:50
 
      
         
     },
     inputText:{
-        fontSize:24,
-        fontWeight:"700",
         color:"#50C878"
-        
 
     }
     ,
@@ -66,7 +62,8 @@ export const mainStyles=StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent:"center",
-        gap: 5,
+        gap: 9,
+        
     },
     
     alreadyLink: {
@@ -105,7 +102,9 @@ export const mainStyles=StyleSheet.create({
     bodyText:{
         color:themeColors.darkGray,
         fontSize:18,
-        textAlign:"center"
+        textAlign:"center",
+        paddingBottom:40
+        
     },
     ScrollViewContainer: {
         flexGrow: 1,

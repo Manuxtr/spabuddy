@@ -3,7 +3,6 @@ import { Link } from "expo-router";
 import { Dimensions, FlatList, Image, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-
 export const screenWidth = Dimensions.get("window").width;
 function Seperator() {
   return(
