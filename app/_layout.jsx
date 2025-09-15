@@ -8,16 +8,16 @@ export default function RootLayout() {
   const {currentUser} = useContext (AuthContext)
   return (
     <AuthProvider>
-    <Stack >
+    <Stack  screenOptions={{headerShown:false}}>
       {currentUser !== undefined ?
       <Stack.Screen
         name="(tabs)"
+        
      
       />
       :
       <Stack.Screen
         name="signup"
-        
         options={{ 
         title: "Signup",
         headerShown:false

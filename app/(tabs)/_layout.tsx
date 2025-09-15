@@ -26,7 +26,7 @@ export default function _Layout(){
                 name="appointment"
                 options={{
                     title: "Appointments",
-                    headerShown:true,
+                    headerShown:false,
                 tabBarIcon:({}) => <MaterialIcons name="add-task" size={34} color="black"  /> 
                     
                 }}/>
@@ -35,7 +35,7 @@ export default function _Layout(){
                 name="appointment-history"
                 options={{
                     title: "Appointment History",
-                    headerShown: true,
+                    headerShown: false,
                     tabBarIcon: ({}) => <MaterialCommunityIcons name="folder-settings-outline" size={24} color="black" />
                     
                     
@@ -45,7 +45,7 @@ export default function _Layout(){
                 name="settings"
                 options={{
                     title: "Settings",
-                    headerShown: true,
+                    headerShown: false,
                     tabBarIcon: ({}) => <MaterialIcons name="perm-data-setting" size={24} color="black" />
                     
                 }}/>
