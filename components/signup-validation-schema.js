@@ -10,8 +10,15 @@ import * as yup from "yup";
     .matches(/\d/, "Password must contain at least one number.")
     .matches(/[!@#$%^&*]/, "Password must contain at least one special character.")
     .required("Password is required"),
-    passwordConfirmation: yup.string()
+  passwordConfirmation: yup.string()
     .oneOf([yup.ref("password"), null], "Passwords must match")
     .required("Confirm Password is required"),
+  fullname:yup.string()
+  .max(15).required(),
+  phone:yup.string()
+  .min(11,"must be 11 digits")
+  .max(11,"not more that 11 digit")
+  .required()
+
 
 })

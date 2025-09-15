@@ -2,7 +2,7 @@ import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { auth } from "@/config/firebase.config";
+import { auth, db } from "@/config/firebase.config";
 import { signOut } from "firebase/auth";
 import { useState,useEffect } from "react";
 import { ActivityIndicator } from "react-native";
@@ -10,8 +10,9 @@ import { useContext } from "react";
 import { AuthContext } from "@/config/context.config";
 import { useRouter } from "expo-router";
 
+
 export default function Settings() {
-  const {currentUser} = useContext(AuthContext);
+  const {currentUser,fullname,phone} = useContext(AuthContext);
   const [isLoading,setisLoading] = useState(false);
 
   const router = useRouter();
@@ -51,17 +52,17 @@ export default function Settings() {
               source={require("../../public/images/user.png")}
               alt="display-pic-demo"
               />
-              <Text className="font-bold text-lg">Boma Jaja</Text>
+              <Text className="font-bold text-lg">{fullname}</Text>
               <Text className="text-stone-800 tracking-widest">@bomajj</Text>
             </View>
             <View className="flex p-3 rounded-md " style={{marginHorizontal:20}}>
               <View className="flex flex-row justify-evenly mb-3">
                 <Text className="text-stone-800 tracking-wider text-lg">Email</Text>
-                <Text className="text-stone-800 tracking-wider text-md">bomajaja@gmail.com</Text>
+                <Text className="text-stone-800 tracking-wider text-md">{currentUser?.email }</Text>
               </View>
                <View className="flex flex-row justify-evenly mb-3">
                 <Text className="text-stone-800 tracking-wider text-lg">phone:</Text>
-                <Text className="text-stone-800 tracking-wider text-md">0908273483</Text>
+                <Text className="text-stone-800 tracking-wider text-md">{phone}</Text>
               </View>
             </View>
             <View className="flex flex-row items-center justify-evenly mt-20 ">
