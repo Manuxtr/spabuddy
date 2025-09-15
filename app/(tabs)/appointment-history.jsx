@@ -85,13 +85,13 @@ if (aphistory.length > 0) {
                   <Text className="text-2xl  ">{item.data.services}</Text>
                </View>
                
-                <Modal visible={modalVisible}
+                <View visible={modalVisible}
                 transparent={true}
                 animationType="slide"
                
                 >
                   <Pressable>
-                    <Text>VIEW HISTORY</Text>
+                    {/* <Text>VIEW HISTORY</Text> */}
                   </Pressable>
                   <View className="flex-row  gap-6">
                   <Text className="text-2xl font-semibold">Email:</Text>
@@ -121,7 +121,7 @@ if (aphistory.length > 0) {
                     </Pressable>
                   </View>
 
-                </Modal>
+                </View>
              
               
             </View>
