@@ -36,8 +36,6 @@ export const mainStyles=StyleSheet.create({
         
     },
     inputText:{
-        fontSize:24,
-        fontWeight:"700",
         color:"#50C878"
         
 

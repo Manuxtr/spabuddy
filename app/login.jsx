@@ -1,25 +1,35 @@
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
-import { Link, router } from "expo-router";
 import { SafeAreaView, ScrollView, Text,Image, TextInput, TouchableOpacity, View, Alert, Platform, ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import { StyleSheet } from "react-native";
 import {useFormik} from "formik";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import {signInWithEmailAndPassword } from "firebase/auth";
+import { useEffect, useState } from "react";
 import { auth } from "@/config/firebase.config";
 import { KeyboardAvoidingView } from "react-native";
 import {signInValidation} from "../components/signin-validation-schema"
 import { useRouter } from "expo-router";
-import { collection, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { Link } from "expo-router";
 
 
 
 
 export default function Login() {
   const [isLoading,setisLoading] = useState(false)
+  const router = useRouter();
 
+  // useeffect to prevent the user from going back after login
+  useEffect(() => {
+    onAuthStateChanged(auth,(user) => {
+      if(user){
+        router.replace("/(tabs)")
+      }
+    });
+    
+  })
 
     const {handleBlur,handleChange,handleSubmit,touched,errors,values} = useFormik({
       initialValues:{email:"",password:""},
@@ -31,10 +41,10 @@ export default function Login() {
           Alert.alert("message",
             "welcome back"
           )
-          router.replace("/(tabs)")
+   
         } catch (error) {
           Alert.alert("MESSAGE",
-            "AN ERROR OCCURED",
+            "error try again",
             [{text:"Dismiss"}]
           )
           
@@ -44,31 +54,31 @@ export default function Login() {
 
     })
 
-    const handleSingIn = async () => {
-    setisLoading(true);
+  //   const handleSingIn = async () => {
+  //   setisLoading(true);
 
-    try {
-       await signInWithEmailAndPassword(auth,values.email,values.password);
-      setisLoading(false)
-      Alert.alert(
-        "Message",
-        "welcome back",
-      )
-      router.replace("/(tabs)")
-    } catch (error) {
-      Alert.alert(
-        "Message",
-        "An error occured. Try again",
-        [{text:"Dismiss"}]
+  //   try {
+  //      await signInWithEmailAndPassword(auth,values.email,values.password);
+  //     setisLoading(false)
+  //     Alert.alert(
+  //       "Message",
+  //       "welcome back",
+  //     )
+  //     router.replace("/(tabs)")
+  //   } catch (error) {
+  //     Alert.alert(
+  //       "Message",
+  //       "An error occured. Try again",
+  //       [{text:"Dismiss"}]
 
-      );
-      setisLoading(false);
-      console.log("error",error)
+  //     );
+  //     setisLoading(false);
+  //     console.log("error",error)
       
-    }
+  //   }
     
 
-  }
+  // }
 
     const [fontsLoaded]=useFonts({
       "Raleway-Light":require("../assets/fonts/Raleway-Light.ttf"),
@@ -88,10 +98,10 @@ export default function Login() {
     : "height"
    }
    style={mainStyles.wrapper}>  
-   <View  style={{flex: 1, paddingVertical:60,display:"flex"}}>
-      <Text 
-        style={{ fontSize:50, fontWeight:"bold", textAlign:"center",fontFamily:"Chocolate Bar Demo"}}
-        className="text-emerald-700 ">SPA BUDDY</Text>
+       <View  style={{ paddingVertical:60,display:"flex",flex:1}}>
+        <Text 
+         style={{ fontSize:50, fontWeight:"bold", textAlign:"center",fontFamily:"Chocolate Bar Demo"}}
+          className="text-emerald-700 ">SPA BUDDY</Text>
         <Text className="text-2xl font-bold text-center text-emerald-600  font-mono font border-b-2 border-emerald-500">Best  in selfcare!</Text>
       </View>
 
@@ -163,8 +173,7 @@ export default function Login() {
                  <Link href="/signup" style={mainStyles.alreadyLink}>Go to sign up</Link>
                 </View>
               </View>
-
-              
+    
            </ScrollView>
    </KeyboardAvoidingView>
   );

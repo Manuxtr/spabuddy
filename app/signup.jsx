@@ -1,49 +1,50 @@
-import { auth,db} from "@/config/firebase.config";
+import { auth, db } from "@/config/firebase.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import { Link, useRouter } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useFormik } from "formik";
-import { useState } from "react";
-import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native";
-import * as yup from "yup";
-import { router } from "expo-router";
-import {signUpValidation} from"../components/signup-validation-schema"
+import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { signUpValidation } from "../components/signup-validation-schema";
+import { FontAwesome } from "@expo/vector-icons";
 
 
 export default function SignUp() {
+  const router = useRouter();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        Alert.alert("messgae",
+          "Account Created",
+        )
+       router.replace("/(tabs)")
+      }
+    });
+    return unsubscribe;
+  }, []);
+
   
   const [isLoading, setisLoading] = useState(false); 
-  
-  const router = useRouter(); 
+
+
 
  
 
   const { handleBlur, handleChange, handleSubmit, touched, errors, values } = useFormik({
-    initialValues: { email: "", password: "", passwordConfirmation: "" },
+    initialValues: { phone:"",email: "", password: "", passwordConfirmation: "" },
     onSubmit: async () => {
       setisLoading(true);
       try {
         const userDetails = await createUserWithEmailAndPassword(auth, values.email, values.password);
-        const docRef =await addDoc(collection(db,"user"),{
+        const docRef = await addDoc(collection(db,"user"),{
+          phone:values.phone,
           email:values.email,
           uid:userDetails.user.uid,
           createdAt:new Date().getTime()
 
         });
-
-        if(docRef.id){
-          Alert.alert(
-            "message",
-            "Account created",
-            [ {text:"okay"}
-             ,{text:"Go to Home",
-            onPress: () => router.replace("/(tabs)")}]
-          )
-        }
-
-        console.log(userDetails);
         setisLoading(false);
 
       } catch (error) {
@@ -63,16 +64,16 @@ validationSchema:signUpValidation
      style={mainStyles.wrapper}   
       behavior={Platform.OS === "ios" ? "padding" 
         : "height"
-      }
-      
-      >
-     <View style={{flex: 1, paddingVertical:10,display:"flex",marginTop:Platform.OS === "android" ? StatusBar.currentHeight : 60 }}>
-        <Text 
-          style={{fontSize:40, fontWeight:"bold", textAlign:"center",fontFamily:"FiraSans-MediumItalic"}}
-          className="text-emerald-700 ">SPA BUDDY</Text>
+      }>
+         <View style={{display:"flex",flex:1,paddingVertical:59}} >
+          <Text 
+            style={{fontSize:50, fontWeight:"bold", textAlign:"center",fontFamily:"Chocolate Bar Demo"}}
+            className="text-emerald-700 ">SPA BUDDY</Text>
           <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500">Best  in selfcare!</Text>
       </View>
-      <ScrollView style={{display:"flex", paddingTop:12}}>
+      <ScrollView style={{display:"flex",paddingTop:30, }}>
+        
+
         <View style={mainStyles.inputTextview}>
 
                <Text style={mainStyles.bodyText}>Create new account</Text>
@@ -93,12 +94,23 @@ validationSchema:signUpValidation
                     <Text style={mainStyles.orText}>OR</Text>
                     <View style={mainStyles.line}></View>
                   </View>
-                    
+              <View>
+                <TextInput
+                keyboardType="default"
+                style={mainStyles.loginForm}
+                placeholder="09079233872"
+                value={values.phone}
+                onChangeText={handleChange("phone")}
+                onBlur={handleBlur("phone")}/>
+              </View>
+             
+               
+                <Text>{errors.phone}</Text>
               <View>
                 <TextInput
                 keyboardType="email-address"
                 style={mainStyles.loginForm}
-                placeholder="eg. manuel@gmail.com"
+                placeholder="eg. example@gmail.com"
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
@@ -125,7 +137,7 @@ validationSchema:signUpValidation
                 <Text style={mainStyles.inputText}></Text>
                 <TextInput
                 style={mainStyles.loginForm}
-                placeholder="Comfirm Password"
+                placeholder="Confirm Password"
                 keyboardType="default"
                 secureTextEntry={true}
                 value={values.passwordConfirmation}
@@ -139,7 +151,7 @@ validationSchema:signUpValidation
 
         <View style={{paddingHorizontal:10, marginTop:40}}>
                 
-          {!errors.passwordConfirmation && !errors.email && touched.passwordConfirmation &&
+          {!errors.password && !errors.email && 
           <TouchableOpacity onPress={handleSubmit}  style={{ height:55,backgroundColor:themeColors.darkGreen,padding:5, borderRadius: 100,  justifyContent:"center", alignItems: "center" }}>
            {isLoading ? <ActivityIndicator size="small" color="white"/>
            :
@@ -152,6 +164,7 @@ validationSchema:signUpValidation
             <Text style={mainStyles.alreadyText}>Already have an account?</Text>
             <Link href="/login" style={mainStyles.alreadyLink}>Go to Log in</Link>
         </View>
+        
       </ScrollView> 
    </KeyboardAvoidingView>
   );
