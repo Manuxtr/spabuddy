@@ -18,18 +18,14 @@ export const mainStyles=StyleSheet.create({
         flex:1,
         display:"flex",
         justifyContent:"space-between",
-        paddingTop:StatusBar.currentHeight,
-        
-
-     
-        
+        paddingTop:StatusBar.currentHeight,  
     },
     inputTextview:{
         flex:1,
         display:"flex",
         gap:9,
-        paddingVertical:10,
-        paddingHorizontal:5,
+        paddingVertical:9,
+        paddingHorizontal:19,
         paddingTop:30
 
      

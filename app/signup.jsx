@@ -2,28 +2,27 @@ import { auth, db } from "@/config/firebase.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import { Link, useRouter } from "expo-router";
-import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { signUpValidation } from "../components/signup-validation-schema";
-import { FontAwesome } from "@expo/vector-icons";
 
 
 export default function SignUp() {
   const router = useRouter();
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        Alert.alert("messgae",
-          "Account Created",
-        )
-       router.replace("/(tabs)")
-      }
-    });
-    return unsubscribe;
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       Alert.alert("messgae",
+  //         "Account Created",
+  //       )
+  //      router.replace("/(tabs)")
+  //     }
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   
   const [isLoading, setisLoading] = useState(false); 
@@ -33,19 +32,29 @@ export default function SignUp() {
  
 
   const { handleBlur, handleChange, handleSubmit, touched, errors, values } = useFormik({
-    initialValues: { phone:"",email: "", password: "", passwordConfirmation: "" },
+    initialValues: { fullname:"",phone:"",email: "", password: "", passwordConfirmation: "" },
     onSubmit: async () => {
       setisLoading(true);
       try {
         const userDetails = await createUserWithEmailAndPassword(auth, values.email, values.password);
         const docRef = await addDoc(collection(db,"user"),{
+          fullname:values.fullname,
           phone:values.phone,
           email:values.email,
           uid:userDetails.user.uid,
           createdAt:new Date().getTime()
 
         });
+
+        if(docRef.id){
+          Alert.alert(
+            "Message",
+            "Account created successfully",
+            [{text:"okay"},{text:"Go to Home",onPress:() => router.replace("/(tabs)")}]
+          )
+        }
         setisLoading(false);
+        
 
       } catch (error) {
         Alert.alert("message",
@@ -85,7 +94,7 @@ validationSchema:signUpValidation
                     width: 36,
                     height: 36,
                     }}
-                  source={require("../public/images/google.jpg")}/>
+                  source={require("../public/images/googleloo.png")}/>
                   <Text style={mainStyles.signInText}>Google</Text>
                 </TouchableOpacity>
                         {/* OR */}
@@ -94,6 +103,16 @@ validationSchema:signUpValidation
                     <Text style={mainStyles.orText}>OR</Text>
                     <View style={mainStyles.line}></View>
                   </View>
+
+              <View>
+                <TextInput
+                keyboardType="default"
+                style={mainStyles.loginForm}
+                placeholder="John Abu"
+                value={values.fullname}
+                onChangeText={handleChange("fullname")}
+                onBlur={handleBlur("fullname")}/>
+              </View>   
               <View>
                 <TextInput
                 keyboardType="default"

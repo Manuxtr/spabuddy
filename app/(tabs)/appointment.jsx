@@ -6,9 +6,12 @@ import { useState } from "react";
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { db } from "../../config/firebase.config";
+import { useContext } from "react";
+import { AuthContext } from "@/config/context.config";
 
 
 export default function BookAp() {
+  const {currentUser} = useContext(AuthContext)
 
   const [date,setDate]=useState(new Date());
   const [showPicker,setShowPicker]=useState(false);
@@ -63,9 +66,7 @@ export default function BookAp() {
     setLoading(true);
     try {
       const docRef=addDoc(collection(db,"bookings"),{
-      name:name,
-      phone:phone,
-      email:email,
+      createdBy:currentUser.uid,  
       address:address,
       requests:requests,
       gender:gender,
@@ -106,7 +107,7 @@ export default function BookAp() {
       //  <SafeAreaProvider> 
         behavior={Platform.OS==="ios"? "padding":"height"}>
         <SafeAreaView style={{display:"flex",justifyContent:"space-between"}}>
-          <ScrollView>
+          <ScrollView >
             <View>
               <Text 
               style={{fontSize:50, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
@@ -115,7 +116,7 @@ export default function BookAp() {
             </View>
           
             <View style={mainStyles.inputTextview}>
-              <View style={{justifyContent:"center"}}>
+              {/* <View style={{justifyContent:"center"}}>
                <Text style={mainStyles.inputText}>Name:</Text>
                 <TextInput
                 value={name}
@@ -123,8 +124,8 @@ export default function BookAp() {
                 style={mainStyles.loginForm}
                 placeholder="Enter your name here"
                 />
-              </View>
-                <View style={{justifyContent:"center"}}>
+              </View> */}
+                {/* <View style={{justifyContent:"center"}}>
                 <Text style={mainStyles.inputText}>Phone:</Text>
                 <TextInput
                 value={phone}
@@ -132,8 +133,8 @@ export default function BookAp() {
                 style={mainStyles.loginForm}
                 placeholder="Enter your phone here"
                 />
-              </View>
-                <View style={{justifyContent:"center"}}>
+              </View> */}
+                {/* <View style={{justifyContent:"center"}}>
                 <Text style={mainStyles.inputText}>Email:</Text>
                 <TextInput
                 value={email}
@@ -141,7 +142,27 @@ export default function BookAp() {
                 style={mainStyles.loginForm}
                 placeholder="Enter your email here"
                 />
+              </View> */}
+                <View style={{justifyContent:"center"}}>
+                <Text style={mainStyles.inputText}> Gender:</Text>
+                <RNPickerSelect
+                items={userGender}
+                onValueChange={(item) =>setGender(item)}
+                value={gender}
+                style={pickerSelectStyles.inputIOS}
+                placeholder={{ label: "Select your gender", value: gender}}
+                />
               </View>
+             <View style={{justifyContent:"center"}}>
+                <Text style={mainStyles.inputText}> Services:</Text>
+                <RNPickerSelect items={servicesOptions}
+                onValueChange={(item) =>setServices(item)}
+                value={services}
+                style={pickerSelectStyles.inputIOS}
+                placeholder={{ label: "Select a service", value: null}}
+                />
+              </View>
+                
                 <View style={{justifyContent:"center"}}>
                 <Text style={mainStyles.inputText}>Address:</Text>
                 <TextInput
@@ -161,25 +182,7 @@ export default function BookAp() {
                   placeholder="enter your special request "
                 />
               </View>
-                 <View style={{justifyContent:"center"}}>
-                <Text style={mainStyles.inputText}> Gender:</Text>
-                <RNPickerSelect
-                items={userGender}
-                onValueChange={(item) =>setGender(item)}
-                value={gender}
-                style={pickerSelectStyles.inputIOS}
-                placeholder={{ label: "Select your gender", value: gender}}
-                />
-              </View>
-             <View style={{justifyContent:"center"}}>
-                <Text style={mainStyles.inputText}> Services:</Text>
-                <RNPickerSelect items={servicesOptions}
-                onValueChange={(item) =>setServices(item)}
-                value={services}
-                style={pickerSelectStyles.inputIOS}
-                placeholder={{ label: "Select a service", value: null}}
-                />
-              </View>
+        
               <View style={{justifyContent:"center",padding:2}}>
                 <TouchableOpacity
                   style={mainStyles.loginForm}
@@ -205,8 +208,9 @@ export default function BookAp() {
 
             <View style={{paddingHorizontal:10, paddingBottom:20}}>
               <TouchableOpacity onPress={
-                name.length > 6 &&
-                phone.length > 5
+                address.length > 6 &&
+                gender != null &&
+                services != null 
                 ?handleBooking : () => {}}
                style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:30}}>           
                 <Text style={{
