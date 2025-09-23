@@ -2,58 +2,56 @@ import { auth, db } from "@/config/firebase.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import { Link, useRouter } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword, updateProfile,getAuth} from "firebase/auth";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { signUpValidation } from "../components/signup-validation-schema";
+import { AuthContext } from "@/config/context.config";
+
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 
 export default function SignUp() {
-  const router = useRouter();
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       Alert.alert("messgae",
-  //         "Account Created",
-  //       )
-  //      router.replace("/(tabs)")
-  //     }
-  //   });
-  //   return unsubscribe;
-  // }, []);
-
-  
+  const {currentUser} = useContext(AuthContext)
   const [isLoading, setisLoading] = useState(false); 
-
-
-
- 
+  const [showPassword,setShowPassword] = useState(false)
+  const authenticated = getAuth()
+  const router = useRouter();
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
 
   const { handleBlur, handleChange, handleSubmit, touched, errors, values } = useFormik({
-    initialValues: { fullname:"",phone:"",email: "", password: "", passwordConfirmation: "" },
+    initialValues: {username:"", fullname:"",phone:"",email: "", password: "", passwordConfirmation: "" },
     onSubmit: async () => {
       setisLoading(true);
       try {
-        const userDetails = await createUserWithEmailAndPassword(auth, values.email, values.password);
-        const docRef = await addDoc(collection(db,"user"),{
+        // create a new user
+        const user = await createUserWithEmailAndPassword(auth, values.email, values.password);
+        setisLoading(false)
+
+        // update users profile
+        updateProfile(authenticated.currentUser,{
+          displayName:`${values.fullname} ${values.phone} ${values.email}`
+        })
+
+        // store user data on fbase database
+
+         setDoc(doc(db,"users",authenticated.currentUser.uid),{
+          username:values.username,
           fullname:values.fullname,
           phone:values.phone,
           email:values.email,
-          uid:userDetails.user.uid,
-          createdAt:new Date().getTime()
+          createdAt:new Date().getTime(),
+          // uid:currentUser.user.uid
+          // userId:currentUser.uid
 
         });
 
-        if(docRef.id){
-          Alert.alert(
-            "Message",
-            "Account created successfully",
-            [{text:"okay"},{text:"Go to Home",onPress:() => router.replace("/(tabs)")}]
-          )
-        }
-        setisLoading(false);
+        router.replace("/(tabs)")
         
 
       } catch (error) {
@@ -65,7 +63,7 @@ export default function SignUp() {
         setisLoading(false)
       }
     },
-validationSchema:signUpValidation
+      validationSchema:signUpValidation
   });
 
   return (
@@ -112,7 +110,17 @@ validationSchema:signUpValidation
                 value={values.fullname}
                 onChangeText={handleChange("fullname")}
                 onBlur={handleBlur("fullname")}/>
-              </View>   
+              </View>
+              <View>
+                <TextInput
+                keyboardType="default"
+                style={mainStyles.loginForm}
+                placeholder="@danielmaxel"
+                value={values.username}
+                onChangeText={handleChange("username")}
+                onBlur={handleBlur("username")}/>
+                <Text style={mainStyles.errorMessage}>{errors.username}</Text>
+              </View>    
               <View>
                 <TextInput
                 keyboardType="default"
@@ -121,10 +129,10 @@ validationSchema:signUpValidation
                 value={values.phone}
                 onChangeText={handleChange("phone")}
                 onBlur={handleBlur("phone")}/>
+                <Text style={mainStyles.errorMessage}>{errors.phone}</Text>
               </View>
-             
-               
-                <Text>{errors.phone}</Text>
+            
+                
               <View>
                 <TextInput
                 keyboardType="email-address"
@@ -134,12 +142,12 @@ validationSchema:signUpValidation
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
                 />
-                <Text>{errors.email}</Text>
+                <Text style={mainStyles.errorMessage}>{errors.email}</Text>
                </View>
 
-                <View>
+                <View style = {mainStyles.passwordV}>
                   <TextInput
-                  secureTextEntry={true}
+                  secureTextEntry={!showPassword}
                   keyboardType="default"
                   style={mainStyles.loginForm}
                   placeholder=" Create Password"
@@ -147,13 +155,15 @@ validationSchema:signUpValidation
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   />
+                  <TouchableOpacity onPress={togglePasswordVisibility}>
+                   <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={24} color="black" />
+                 </TouchableOpacity>
                   {errors.password && touched.password &&
-                  <Text>{errors.password}</Text>
+                  <Text style={mainStyles.errorMessage}>{errors.password}</Text>
                   }
                </View>
 
                 {<View>
-                <Text style={mainStyles.inputText}></Text>
                 <TextInput
                 style={mainStyles.loginForm}
                 placeholder="Confirm Password"
@@ -163,8 +173,9 @@ validationSchema:signUpValidation
                 onChangeText={handleChange("passwordConfirmation")}
                 onBlur={handleBlur("passwordConfirmation")}
                 />
+                
                 {errors.passwordConfirmation && touched.passwordConfirmation &&
-                <Text>{errors.passwordConfirmation}</Text>
+                <Text style={mainStyles.errorMessage}>{errors.passwordConfirmation}</Text>
                 }
                </View>}
 

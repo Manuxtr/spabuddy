@@ -3,7 +3,7 @@ import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import { useFonts } from "expo-font";
 import { Link, useRouter } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword ,getAuth} from "firebase/auth";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -15,6 +15,7 @@ import { signInValidation } from "../components/signin-validation-schema";
 export default function Login() {
   const [isLoading,setisLoading] = useState(false)
   const router = useRouter();
+  const authenticated = getAuth()
 
   // useeffect to prevent the user from going back after login
   // useEffect(() => {
@@ -33,6 +34,9 @@ export default function Login() {
         try {
            await signInWithEmailAndPassword(auth,values.email,values.password)
           setisLoading(false)
+
+            // redirect home
+          if(authenticated.currentUser)
           Alert.alert("message",
             "welcome back",
             router.replace("/(tabs)")
@@ -41,10 +45,11 @@ export default function Login() {
    
         } catch (error) {
           Alert.alert("MESSAGE",
-            "error try again",
+            "invalid email and password",
             [{text:"Dismiss"}]
-          )
-          
+          );
+          console.log(error)
+          setisLoading(false)
         }
       },
       validationSchema:signInValidation

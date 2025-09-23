@@ -6,12 +6,13 @@ import { themeColors } from "./maincolors.utils";
 export const mainStyles=StyleSheet.create({
     loginForm:{
         width:"100%",
-        borderWidth:2,
+        borderWidth:1,
         borderColor:themeColors.darkGreen,
         paddingHorizontal:16,
         paddingVertical:20,
         fontSize:16,
         borderRadius:15,
+        
         
     },
     wrapper:{
@@ -22,10 +23,10 @@ export const mainStyles=StyleSheet.create({
     },
     inputTextview:{
         flex:1,
-        display:"flex",
+        // display:"flex",
         gap:9,
-        paddingVertical:9,
-        paddingHorizontal:19,
+        paddingVertical:5,
+        paddingHorizontal:35,
         paddingTop:30
 
      
@@ -106,4 +107,16 @@ export const mainStyles=StyleSheet.create({
         justifyContent: "space-between",
         marginBottom: 40,
     },
+    errorMessage:{
+        color:"red"
+    },
+    passwordV:{
+       
+        display:"flex",
+        flexDirection:"column",
+        // alignItems:"center",
+        // justifyContent:"center",
+        
+    },
+    
 })

@@ -18,7 +18,12 @@ import * as yup from "yup";
   phone:yup.string()
   .min(11,"must be 11 digits")
   .max(11,"not more that 11 digit")
-  .required()
+  .required(),
+  username:yup.string()
+  .matches(/[@]/,"must start with @")
+  .min(5,"username must atleast 5 characters")
+  .max(16,"username must not  more than 8 characters"),
+  fullname:yup.string()
 
 
 })

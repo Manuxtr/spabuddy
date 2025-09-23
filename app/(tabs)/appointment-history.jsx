@@ -1,8 +1,9 @@
 import { AuthContext } from "@/config/context.config";
 import { db } from "@/config/firebase.config";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { collection, deleteDoc, doc, getDoc, onSnapshot, query, where } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Button, FlatList, ImageBackground, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Button, FlatList, ImageBackground, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -12,18 +13,20 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 export default function APhistory() {
 
   const {currentUser} = useContext(AuthContext)
-  
   const [aphistory,setAPhistory]=useState([]);
   const [expandText,setExpandText]=useState(false);
   const [modalVisible,setModalVisible]=useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [userInfo,setUserInfo] = useState(false)
+  const [isLoading ,setIsLoading] = useState(false)
 
 
 
   // useeffect to get appointments from database
   useEffect(() =>{
     const handleFetchData =  () => {
-      const q =query(collection(db,"bookings"))
+      const q =query(collection(db,"bookings"),
+    where("createdBy","==",currentUser?.uid))
 
       onSnapshot(q,(querySnapShot) => {
         const recievedData = []
@@ -38,7 +41,42 @@ export default function APhistory() {
     handleFetchData()
   },[])
 
-if (aphistory.length > 0) {
+  // to get user info from signup
+  useEffect(() => {
+     const getUserInfo = async () => {
+      try {
+        const docSnap = await getDoc(doc(db,"users",currentUser.uid))
+        if (docSnap.exists()){
+          setUserInfo(docSnap.data())
+        }
+      } catch (error) {
+        console.log("error",error)
+      }
+    }
+    currentUser !== undefined && getUserInfo()
+  },[currentUser])
+  
+  const handleDeleteBooking = async (bookingId) => {
+    setIsLoading(true)
+
+    try {
+      await deleteDoc(doc(db,"bookings",bookingId))
+      Alert.alert("message",
+        "Booking deleted",
+        [{text:"okay"}])
+      setIsLoading(false)
+    } catch (error) {
+      Alert.alert("error","Action not completed try again",
+        [{text:"Dismis"}],
+        
+      )
+      setIsLoading(false)
+      console.log("error",error)
+
+    }
+  }
+
+if (aphistory.length > 0  ) {
 
     return (
     <SafeAreaProvider>
@@ -75,11 +113,11 @@ if (aphistory.length > 0) {
               </View>
               <View className="flex-row  gap-6">
                 <Text className="text-2xl font-semibold">Name:</Text>
-                <Text className="text-2xl  ">{currentUser?.fullname}</Text>
+                <Text className="text-2xl  ">{userInfo.fullname}</Text>
               </View>
               <View className="flex-row  gap-6">
                 <Text className="text-2xl font-semibold">Phone:</Text>
-                <Text className="text-2xl  ">{currentUser?.phone}</Text>
+                <Text className="text-2xl  ">{userInfo.phone}</Text>
               </View>
                 <View className="flex-row  gap-6">
                   <Text className="text-2xl font-semibold">Gender:</Text>
@@ -96,8 +134,19 @@ if (aphistory.length > 0) {
 
                 <View className="flex flex-row  gap-6 justify-between" >
                     <Pressable onPress= {() => setSelectedItem(item)}>
-                    <Text className="text-2xl font-semibold text-red-700" >Show more info</Text>
+                    <Text className="text-2xl font-semibold text-emerald-600" >Show more info</Text>
                   </Pressable>
+                </View>
+
+                <View>
+                  <TouchableOpacity onPress={() => handleDeleteBooking(item.id)}>
+                    {isLoading
+                    ? 
+                    <ActivityIndicator size="small" color="red" />
+                    :
+                    <MaterialIcons name="delete" size={32} color="green" />}
+                  </TouchableOpacity>
+
                 </View>
 
                 <Modal
@@ -111,7 +160,7 @@ if (aphistory.length > 0) {
 
                   <View className="flex-row  gap-6">
                   <Text className="text-2xl font-semibold">Email:</Text>
-                    <Text className="text-2xl  ">{item.data.email}</Text>
+                    <Text className="text-2xl  ">{userInfo.email}</Text>
                   </View>
                 
                   <View style={{flexDirection:"row",gap:6}}>
@@ -147,6 +196,7 @@ if (aphistory.length > 0) {
            }}
             keyExtractor={(item) => item.id}
           />
+
        </ImageBackground>
       </SafeAreaView>
     </SafeAreaProvider>
