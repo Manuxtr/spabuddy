@@ -1,19 +1,18 @@
+import { AuthContext } from "@/config/context.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addDoc, collection } from "firebase/firestore";
-import { useState } from "react";
-import { ActivityIndicator, Alert, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { db } from "../../config/firebase.config";
-import { useContext } from "react";
-import { AuthContext } from "@/config/context.config";
-// import { ImageBackground } from "react-native";
 
 
-export default function BookAp() {
-  const {currentUser} = useContext(AuthContext)
-
+export default function UpdateBookings() {
+  const {currentUser} = useContext(AuthContext);
+  const {uid} = useLocalSearchParams();
   const [date,setDate]=useState(new Date());
   const [showPicker,setShowPicker]=useState(false);
   const [mode,setMode]=useState("date");
@@ -24,8 +23,70 @@ export default function BookAp() {
   const [services,setServices]=useState("");
   const [gender,setGender]=useState("");
   const [email,setEmail]=useState("");
-  const [loading,setLoading]=useState(false)
+  const [isloading,setIsLoading]=useState(false)
 
+
+  // to fetch user data from db
+  useEffect(() => {
+    const getBookingData = async () => {
+      try {
+        setIsLoading(true)
+        const docRef = doc(db,"bookings",uid);
+        const docSnap = await getDoc(docRef);
+
+        if(docSnap.exists()){
+          const data = docSnap.data()
+          setGender(data.gender);
+          setServices(data.services);
+          setAddress(data.address);
+          setDate(data.date ? new Date(data.date) : null)
+          setRequests(data.requests)
+        }else{
+          Alert.alert("error","no event found")
+        }
+      } catch (error) {
+        console.log("error updating booking",error)
+      }finally{
+        setIsLoading(false)
+      }
+    }
+    getBookingData()
+  },[uid])
+
+  const handleUpdateBooking = async () => {
+    if(!gender || !services || !address || !requests ){
+      Alert.alert("message",
+        "ALL FIELDS REQIRED",[{text:"Dismiss"
+
+        }])
+        return;
+    }
+    try {
+      setIsLoading(true)
+      const docRef = doc(db,"bookings",uid);
+      await updateDoc(docRef,{
+        gender:gender,
+        services:services,
+        requests:requests,
+        address:address,
+        date:date.getTime(),
+        updatedAt:new Date().getTime()
+      })
+      setIsLoading(false)
+      Alert.alert("sucesss",
+        "booking updated",
+      [{text:"okay"}]
+    );
+    router.back()
+    } catch (error) {
+      console.log("ann error ocuured",error);
+      Alert.alert("error",
+        "failed to update booking"
+      );
+      setIsLoading(false)
+      
+    }
+  }
   // for dropdown list of services
   const servicesOptions=[
     {label:"Mens Cut",value:"Mens cut"},
@@ -63,44 +124,44 @@ export default function BookAp() {
     showMode("time")
   };
 
-  const handleBooking= async () => {
-    setLoading(true);
-    try {
-      const docRef=addDoc(collection(db,"bookings"),{
-      createdBy:currentUser.uid,  
-      address:address,
-      requests:requests,
-      gender:gender,
-      services:services,
-      date:date.toLocaleString()
-      });
+  // const handleBooking= async () => {
+  //   setLoading(true);
+  //   try {
+  //     const docRef=addDoc(collection(db,"bookings"),{
+  //     createdBy:currentUser.uid,  
+  //     address:address,
+  //     requests:requests,
+  //     gender:gender,
+  //     services:services,
+  //     date:date.toLocaleString()
+  //     });
 
-      setLoading(false)
-      Alert.alert(
-        "ALERT",
-        "Booking Successful",
-        [
-          {text:"Okay"},
-          {
-            text:"return",
-            onPress:()=> console.log("back to home")
-          }
-        ]
-      )
-      setName(""),
-      setPhone(""),
-      setEmail(""),
-      setAddress(""),
-      setRequests(""),
-      setGender(""),
-      setServices(""),
-      setDate("")
-    } catch (error) {
-      console.log("an error occured",error)
+  //     setLoading(false)
+  //     Alert.alert(
+  //       "ALERT",
+  //       "Booking Successful",
+  //       [
+  //         {text:"Okay"},
+  //         {
+  //           text:"return",
+  //           onPress:()=> console.log("back to home")
+  //         }
+  //       ]
+  //     )
+  //     setName(""),
+  //     setPhone(""),
+  //     setEmail(""),
+  //     setAddress(""),
+  //     setRequests(""),
+  //     setGender(""),
+  //     setServices(""),
+  //     setDate("")
+  //   } catch (error) {
+  //     console.log("an error occured",error)
       
-    }
+  //   }
 
-  }
+  // }
 
   return (
 
@@ -116,10 +177,7 @@ export default function BookAp() {
               <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
             </View>
           
-            <ImageBackground 
-            // source={require("../../public/images/mybg.jpg")}
-            >
-               <View style={mainStyles.inputTextview}>
+            <View style={mainStyles.inputTextview}>
               {/* <View style={{justifyContent:"center"}}>
                <Text style={mainStyles.inputText}>Name:</Text>
                 <TextInput
@@ -215,7 +273,7 @@ export default function BookAp() {
                 address.length > 6 &&
                 gender != null &&
                 services != null 
-                ?handleBooking : () => {}}
+                ? handleUpdateBooking : () => {}}
                style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:30}}>           
                 <Text style={{
                   fontFamily:"Raleway-Regular",
@@ -223,12 +281,11 @@ export default function BookAp() {
                   color:"white",
                   fontWeight:800,
                  textAlign:"center"
-                 }} >Book Appointment
+                 }} >update Appointment
                 </Text>  
-                {loading === true && <ActivityIndicator size="large" color="red"/>}     
+                {isloading=== true && <ActivityIndicator size="large" color="red"/>}     
               </TouchableOpacity>
-            </View> 
-            </ImageBackground>
+            </View>
           </ScrollView> 
         </SafeAreaView>
    {/* </SafeAreaProvider> */}

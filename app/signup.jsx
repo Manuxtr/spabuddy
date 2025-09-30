@@ -1,14 +1,14 @@
+import { AuthContext } from "@/config/context.config";
 import { auth, db } from "@/config/firebase.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import { Link, useRouter } from "expo-router";
-import { createUserWithEmailAndPassword, updateProfile,getAuth} from "firebase/auth";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { useFormik } from "formik";
 import { useContext, useState } from "react";
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { signUpValidation } from "../components/signup-validation-schema";
-import { AuthContext } from "@/config/context.config";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -92,7 +92,7 @@ export default function SignUp() {
                     width: 36,
                     height: 36,
                     }}
-                  source={require("../public/images/googleloo.png")}/>
+                  source={require("../public/images/mygoogle.png")}/>
                   <Text style={mainStyles.signInText}>Google</Text>
                 </TouchableOpacity>
                         {/* OR */}
@@ -145,23 +145,30 @@ export default function SignUp() {
                 <Text style={mainStyles.errorMessage}>{errors.email}</Text>
                </View>
 
-                <View style = {mainStyles.passwordV}>
-                  <TextInput
-                  secureTextEntry={!showPassword}
-                  keyboardType="default"
-                  style={mainStyles.loginForm}
-                  placeholder=" Create Password"
-                  value={values.password}
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  />
-                  <TouchableOpacity onPress={togglePasswordVisibility}>
-                   <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={24} color="black" />
-                 </TouchableOpacity>
+      
+                <View style ={mainStyles.passwordV}>
+                  <View > 
+                    <TextInput
+                    secureTextEntry={!showPassword}
+                    keyboardType="default"
+                    placeholder=" Create Password"
+                    style={mainStyles.input}
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    />
+                 
+                   </View>
+                    <View style={mainStyles.eye} >
+                      <TouchableOpacity onPress={togglePasswordVisibility}>
+                      <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={24} color="black" />
+                      </TouchableOpacity>
+                    </View>
+                  
+                </View>
                   {errors.password && touched.password &&
-                  <Text style={mainStyles.errorMessage}>{errors.password}</Text>
+                    <Text style={mainStyles.errorMessage}>{errors.password}</Text>
                   }
-               </View>
 
                 {<View>
                 <TextInput

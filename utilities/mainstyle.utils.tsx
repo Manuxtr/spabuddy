@@ -4,17 +4,6 @@ import { themeColors } from "./maincolors.utils";
 
 
 export const mainStyles=StyleSheet.create({
-    loginForm:{
-        width:"100%",
-        borderWidth:1,
-        borderColor:themeColors.darkGreen,
-        paddingHorizontal:16,
-        paddingVertical:20,
-        fontSize:16,
-        borderRadius:15,
-        
-        
-    },
     wrapper:{
         flex:1,
         display:"flex",
@@ -27,15 +16,10 @@ export const mainStyles=StyleSheet.create({
         gap:9,
         paddingVertical:5,
         paddingHorizontal:35,
-        paddingTop:30
-
-     
-        
+        paddingTop:30  
     },
     inputText:{
         color:"#50C878"
-        
-
     }
     ,
     SpecialRequest:{
@@ -111,12 +95,38 @@ export const mainStyles=StyleSheet.create({
         color:"red"
     },
     passwordV:{
-       
-        display:"flex",
-        flexDirection:"column",
-        // alignItems:"center",
-        // justifyContent:"center",
-        
+      width:"100%",
+      position:"relative",
+      borderWidth:1,
+      borderColor:themeColors.darkGreen,
+      paddingHorizontal:10,
+      paddingVertical:10,
+      borderRadius:15, 
+      marginTop:10
     },
+    input:{
+       flex:1,
+       paddingRight:50,
+       fontSize:18,
+      
+    },
+    eye:{
+        position:"absolute",
+        right:15,
+        top:0,
+        bottom:0,
+        justifyContent:"center"
+
+    },
+        loginForm:{
+        width:"100%",
+        borderWidth:1,
+        borderColor:themeColors.darkGreen,
+        paddingHorizontal:16,
+        paddingVertical:20,
+        fontSize:16,
+        borderRadius:15, 
+    },
+  
     
 })

@@ -45,6 +45,15 @@ export default function RootLayout() {
         headerShown:false
         }}/>
 
+         <Stack.Screen
+        name="updatebooking/[uid]"
+        options={{ 
+        title: "updatebookings",
+        headerShown:false
+        }}/>
+
+
+
 
     </Stack>
     </AuthProvider>

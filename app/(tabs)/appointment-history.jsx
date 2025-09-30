@@ -5,7 +5,7 @@ import { collection, deleteDoc, doc, getDoc, onSnapshot, query, where } from "fi
 import { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Button, FlatList, ImageBackground, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
+import { Link } from "expo-router";
 
 
 
@@ -100,8 +100,9 @@ if (aphistory.length > 0  ) {
               backgroundColor:"white",
               borderWidth:0.5,
               borderColor:"green", 
-              borderRadius:5,
-              marginVertical:9,
+              borderRadius:40,
+              marginVertical:40,
+              paddingHorizontal:30,
               shadowColor:"green",
               shadowOffset:{width:6,height:5},
               shadowOpacity:0.25,
@@ -134,19 +135,32 @@ if (aphistory.length > 0  ) {
 
                 <View className="flex flex-row  gap-6 justify-between" >
                     <Pressable onPress= {() => setSelectedItem(item)}>
-                    <Text className="text-2xl font-semibold text-emerald-600" >Show more info</Text>
+                    <Text className="text-2xl font-semibold text-green-800" >Show more info</Text>
                   </Pressable>
                 </View>
 
-                <View>
-                  <TouchableOpacity onPress={() => handleDeleteBooking(item.id)}>
+                <View style={{display:"flex",flexDirection:"row",gap:30}}>
+                  <View>
+                   <TouchableOpacity onPress={() => handleDeleteBooking(item.id)}>
                     {isLoading
                     ? 
                     <ActivityIndicator size="small" color="red" />
                     :
-                    <MaterialIcons name="delete" size={32} color="green" />}
+                    <MaterialIcons name="delete" size={24} color="green" />}
                   </TouchableOpacity>
 
+                  </View>
+                
+                 <View>
+                  <Link href={{pathname:"updatebooking/[uid]",params:{uid:currentUser.uid}}} >
+                    {isLoading
+                    ? 
+                    <ActivityIndicator size="small" color="red" />
+                    :
+                    <MaterialIcons name="edit-note" size={24} color="green" />}
+                  </Link>
+
+                 </View>
                 </View>
 
                 <Modal

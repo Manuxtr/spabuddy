@@ -1,9 +1,10 @@
 import { auth } from "@/config/firebase.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Link, useRouter } from "expo-router";
-import { signInWithEmailAndPassword ,getAuth} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -15,6 +16,10 @@ import { signInValidation } from "../components/signin-validation-schema";
 export default function Login() {
   const [isLoading,setisLoading] = useState(false)
   const router = useRouter();
+  const [showPassword,setShowPassword] = useState(false)
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
   const authenticated = getAuth()
 
   // useeffect to prevent the user from going back after login
@@ -118,7 +123,7 @@ export default function Login() {
                   width: 36,
                   height: 36,
                   }}
-                  source={require("../public/images/googlelogo.jpeg")}/>
+                  source={require("../public/images/mygoogle.png")}/>
                   <Text style={mainStyles.signInText}>Google</Text>
                   </TouchableOpacity>
                   {/* OR */}
@@ -138,8 +143,29 @@ export default function Login() {
                 onBlur={handleBlur("email")}/>
                 <Text>{errors.email}</Text>
               </View>
+ 
+              <View style ={mainStyles.passwordV}>
+                <View > 
+                    <TextInput
+                    secureTextEntry={!showPassword}
+                    keyboardType="default"
+                    style={mainStyles.input}
+                    placeholder=" Create Password"
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    />
+                 
+                </View>
+                <View style={mainStyles.eye}>
+                      <TouchableOpacity onPress={togglePasswordVisibility}>
+                      <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={24} color="black" />
+                      </TouchableOpacity>
+                </View>
+                  
+              </View>
 
-              <View >
+              {/* <View >
                 <TextInput
                 secureTextEntry={true}
                 keyboardType="default"
@@ -148,7 +174,7 @@ export default function Login() {
                 value={values.password}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}/>
-               </View>
+               </View> */}
 
                 <View style={{paddingHorizontal:10, marginTop:40}}>
                 
