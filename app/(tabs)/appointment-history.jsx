@@ -222,6 +222,12 @@ if (aphistory.length > 0  ) {
       <SafeAreaProvider>
         <SafeAreaView style={styles.emptyWrapper}> 
           <ActivityIndicator size="large" color="green"/>
+          <Text>No Bookings Found</Text>
+          <View >
+            <Link href={"/(tabs)/appointment"}>
+            <Text className="text-emerald-700">BOOK NOW</Text>
+            </Link>
+          </View>
         </SafeAreaView>
     </SafeAreaProvider>
   )

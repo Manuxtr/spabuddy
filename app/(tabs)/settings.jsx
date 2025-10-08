@@ -20,9 +20,8 @@ export default function Settings() {
     setisLoading(true);
     try {
       await signOut(auth)
-      .then( () => {
-        router.replace("/login")
-      })
+      router.replace("/login")
+      setisLoading(false)
     } catch (error) {
       Alert.alert("message",
         "an error occured",
@@ -33,25 +32,6 @@ export default function Settings() {
       
     }
   }
-
-    // useEffect(() => {
-    //   const handleUserInfo = async () => {
-    //     const reData = []
-    //     const q = query(collection(db,"bookings"),where("createdBy", "==",currentUser.uid))
-
-    //     onSnapshot(q,(onSnap) => {
-    //       onSnap.docs.forEach((doc) => reData.push({
-    //         id:doc.id,
-    //         data:doc.data()
-    //       }))
-    //       setUserInfo(reData)
-    //     })
-    //   }
-
-    //   handleUserInfo()
-    // },[currentUser])
-
-    // to get user info
 
   useEffect(() => {
      const getUserInfo = async () => {
@@ -65,11 +45,11 @@ export default function Settings() {
         console.log("error",error)
       }
     }
-   if(currentUser.uid){
+   if(currentUser && currentUser.uid){
     getUserInfo()
    }
   },[currentUser])
-  console.log(">>>>",currentUser.uid)
+  
 
 
 

@@ -138,6 +138,7 @@ export default function Login() {
                 keyboardType="email-address"
                 style={mainStyles.loginForm}
                 placeholder="eg manuel@gmail.com"
+                placeholderTextColor="#888"
                 value={values.email}
                 onChangeText={handleChange("email")} 
                 onBlur={handleBlur("email")}/>
@@ -151,6 +152,7 @@ export default function Login() {
                     keyboardType="default"
                     style={mainStyles.input}
                     placeholder=" Create Password"
+                    placeholderTextColor="#888"
                     value={values.password}
                     onChangeText={handleChange("password")}
                     onBlur={handleBlur("password")}

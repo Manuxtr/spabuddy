@@ -2,7 +2,7 @@
 import { themeColors } from "@/utilities/maincolors.utils";
 import { useFonts } from "expo-font";
 import { Link } from "expo-router";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { screenWidth } from "./(tabs)";
 
@@ -25,7 +25,7 @@ export default function IndexHome() {
 
   return (
       <SafeAreaProvider>
-       <SafeAreaView style={{flex: 1,display:"flex",justifyContent:"space-evenly",paddingVertical:1,paddingHorizontal:4}}>
+       <SafeAreaView style={{flex: 1,display:"flex",justifyContent:"space-evenly",paddingHorizontal:4}}>
           <View>
             <Text 
               style={{fontSize:50, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
@@ -38,7 +38,8 @@ export default function IndexHome() {
           </Text>
         </View>
           <View className="bg-emerald-950">
-            <Image
+            <Link href={"/login"}>
+              <Image
               source={require("../public/images/braiding.jpg")}
               style={{
               width: screenWidth,
@@ -47,6 +48,7 @@ export default function IndexHome() {
               backgroundColor:themeColors.darkGreen                                 
               }}
             />
+            </Link>
           </View>
           <View style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:  100,  justifyContent:"center", alignItems: "center"}}>
             <Link href={("/login")} >
@@ -63,7 +65,7 @@ export default function IndexHome() {
  const landPageStyle=StyleSheet.create({
   landingText:{
     fontFamily:"Raleway-Regular",
-    fontSize:24,
+    fontSize:20,
     color:"white",
     fontWeight:200,
     textAlign:"center"

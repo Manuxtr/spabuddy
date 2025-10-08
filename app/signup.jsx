@@ -106,16 +106,19 @@ export default function SignUp() {
                 <TextInput
                 keyboardType="default"
                 style={mainStyles.loginForm}
-                placeholder="John Abu"
+                placeholder=" e.g John Abu"
+                placeholderTextColor="#888"
                 value={values.fullname}
                 onChangeText={handleChange("fullname")}
                 onBlur={handleBlur("fullname")}/>
+                
               </View>
               <View>
                 <TextInput
                 keyboardType="default"
                 style={mainStyles.loginForm}
-                placeholder="@danielmaxel"
+                placeholder="e.g @danielmaxel"
+                placeholderTextColor="#888"
                 value={values.username}
                 onChangeText={handleChange("username")}
                 onBlur={handleBlur("username")}/>
@@ -125,7 +128,8 @@ export default function SignUp() {
                 <TextInput
                 keyboardType="default"
                 style={mainStyles.loginForm}
-                placeholder="09079233872"
+                placeholder=" e.g 09079233872"
+                placeholderTextColor="#888"
                 value={values.phone}
                 onChangeText={handleChange("phone")}
                 onBlur={handleBlur("phone")}/>
@@ -138,6 +142,7 @@ export default function SignUp() {
                 keyboardType="email-address"
                 style={mainStyles.loginForm}
                 placeholder="eg. example@gmail.com"
+                placeholderTextColor="#888"
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
@@ -152,6 +157,7 @@ export default function SignUp() {
                     secureTextEntry={!showPassword}
                     keyboardType="default"
                     placeholder=" Create Password"
+                    placeholderTextColor="#888"
                     style={mainStyles.input}
                     value={values.password}
                     onChangeText={handleChange("password")}
@@ -174,6 +180,7 @@ export default function SignUp() {
                 <TextInput
                 style={mainStyles.loginForm}
                 placeholder="Confirm Password"
+                placeholderTextColor="#888"
                 keyboardType="default"
                 secureTextEntry={true}
                 value={values.passwordConfirmation}

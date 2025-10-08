@@ -33,6 +33,7 @@ export default function UpdateBookings() {
         setIsLoading(true)
         const docRef = doc(db,"bookings",uid);
         const docSnap = await getDoc(docRef);
+      
 
         if(docSnap.exists()){
           const data = docSnap.data()
@@ -43,6 +44,7 @@ export default function UpdateBookings() {
           setRequests(data.requests)
         }else{
           Alert.alert("error","no event found")
+          console.log("no such document",data)
         }
       } catch (error) {
         console.log("error updating booking",error)
@@ -124,44 +126,7 @@ export default function UpdateBookings() {
     showMode("time")
   };
 
-  // const handleBooking= async () => {
-  //   setLoading(true);
-  //   try {
-  //     const docRef=addDoc(collection(db,"bookings"),{
-  //     createdBy:currentUser.uid,  
-  //     address:address,
-  //     requests:requests,
-  //     gender:gender,
-  //     services:services,
-  //     date:date.toLocaleString()
-  //     });
 
-  //     setLoading(false)
-  //     Alert.alert(
-  //       "ALERT",
-  //       "Booking Successful",
-  //       [
-  //         {text:"Okay"},
-  //         {
-  //           text:"return",
-  //           onPress:()=> console.log("back to home")
-  //         }
-  //       ]
-  //     )
-  //     setName(""),
-  //     setPhone(""),
-  //     setEmail(""),
-  //     setAddress(""),
-  //     setRequests(""),
-  //     setGender(""),
-  //     setServices(""),
-  //     setDate("")
-  //   } catch (error) {
-  //     console.log("an error occured",error)
-      
-  //   }
-
-  // }
 
   return (
 

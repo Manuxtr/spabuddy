@@ -100,7 +100,7 @@ export const mainStyles=StyleSheet.create({
       borderWidth:1,
       borderColor:themeColors.darkGreen,
       paddingHorizontal:10,
-      paddingVertical:10,
+      paddingVertical:18,
       borderRadius:15, 
       marginTop:10
     },

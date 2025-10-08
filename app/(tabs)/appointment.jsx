@@ -1,13 +1,12 @@
+import { AuthContext } from "@/config/context.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { addDoc, collection } from "firebase/firestore";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ActivityIndicator, Alert, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { db } from "../../config/firebase.config";
-import { useContext } from "react";
-import { AuthContext } from "@/config/context.config";
 // import { ImageBackground } from "react-native";
 
 
@@ -87,14 +86,14 @@ export default function BookAp() {
           }
         ]
       )
-      setName(""),
-      setPhone(""),
-      setEmail(""),
-      setAddress(""),
-      setRequests(""),
-      setGender(""),
-      setServices(""),
-      setDate("")
+  setName(""),
+  setPhone(""),
+  setEmail(""),
+  setAddress(""),
+  setRequests(""),
+  setGender(""),
+  setServices(""),
+  setDate(new Date()) // reset date to a Date object (or null) 
     } catch (error) {
       console.log("an error occured",error)
       
@@ -154,7 +153,9 @@ export default function BookAp() {
                 onValueChange={(item) =>setGender(item)}
                 value={gender}
                 style={pickerSelectStyles.inputIOS}
-                placeholder={{ label: "Select your gender", value: gender}}
+                placeholder={{ label: "Select your gender", value: null}}
+                placeholderTextColor="#888"
+                
                 />
               </View>
              <View style={{justifyContent:"center"}}>
@@ -191,20 +192,24 @@ export default function BookAp() {
                 <TouchableOpacity
                   style={mainStyles.loginForm}
                   onChangeText={()=>setShowPicker(true)}>
-                  <Text className="text-2xl text-emerald-500">Appointment Date & Time:</Text>
+                  <Text className="text-2xl text-emerald-500">Appointment Date & Time:  {date.toLocaleDateString()} at {date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</Text>
                   {showPicker && (
                   <DateTimePicker
                   testID="dateTimePicker"
                   mode={mode}
                   value={date}
                   is24Hour={true}
-                  display="default"
+                  display="spinner"
                   onChange={onChange}/>
                   )}
                 </TouchableOpacity>
                 <View style={{display:"flex", flexDirection:"row", gap:80,justifyContent:"center",padding:20,alignItems:"center"}}>
-                  <TouchableOpacity style={mainStyles.dateandtimepicker} onPress={ShowDatepicker}><Text className="font-bold text-center text-white">Select Date</Text></TouchableOpacity>
-                  <TouchableOpacity style={mainStyles.dateandtimepicker} onPress={ShowTimepicker}><Text className="font-bold text-center text-white"> Select Time</Text></TouchableOpacity>
+                  <TouchableOpacity 
+                   style={mainStyles.dateandtimepicker} 
+                    onPress={ShowDatepicker}>
+                    <Text className="font-bold text-center text-white">Select Date</Text></TouchableOpacity>
+                  <TouchableOpacity style={mainStyles.dateandtimepicker} onPress={ShowTimepicker}>
+                    <Text className="font-bold text-center text-white"> Select Time</Text></TouchableOpacity>
                 </View>
               </View>
 
@@ -237,26 +242,38 @@ export default function BookAp() {
 }
 
 const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-    backgroundColor: '#fff', // Added a background color for visibility
-    height: 50,
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-})
+ inputIOS: {
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: '#ccc', // A visible border helps confirm size/placement
+        borderRadius: 8,
+        color: 'black',
+        paddingRight: 30, // To make space for the arrow icon
+        height: 50,       // Explicit height is essential
+        // backgroundColor: 'white', // Ensure it has a background
+    },
+    // The placeholder style is needed to ensure text is visible when no value is selected
+    placeholder: {
+        color: '#888', // Placeholder color for visibility
+    },
+    // The main container style, often mirrors the TextInput style
+    viewContainer: {
+        // You might need to add padding or margin here if it's too close to other elements
+        marginVertical: 10, 
+    },
+
+    // Optional: Android styling for completeness
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        color: 'black',
+        paddingRight: 30,
+        height: 50,
+    },
+});
