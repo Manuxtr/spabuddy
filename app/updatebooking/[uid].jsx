@@ -2,7 +2,7 @@ import { AuthContext } from "@/config/context.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams ,useRouter} from "expo-router";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
@@ -11,19 +11,18 @@ import { db } from "../../config/firebase.config";
 
 
 export default function UpdateBookings() {
-  const {currentUser} = useContext(AuthContext);
   const {uid} = useLocalSearchParams();
+  const router = useRouter();
+
   const [date,setDate]=useState(new Date());
   const [showPicker,setShowPicker]=useState(false);
   const [mode,setMode]=useState("date");
-  const [name,setName]=useState("");
-  const [phone,setPhone]=useState("");
   const [address,setAddress]=useState("");
   const [requests,setRequests]=useState("");
   const [services,setServices]=useState("");
   const [gender,setGender]=useState("");
-  const [email,setEmail]=useState("");
   const [isloading,setIsLoading]=useState(false)
+
 
 
   // to fetch user data from db
@@ -40,11 +39,11 @@ export default function UpdateBookings() {
           setGender(data.gender);
           setServices(data.services);
           setAddress(data.address);
-          setDate(data.date ? new Date(data.date) : null)
+          setDate(data.date ? new Date(data.date) : new Date());
           setRequests(data.requests)
         }else{
           Alert.alert("error","no event found")
-          console.log("no such document",data)
+         
         }
       } catch (error) {
         console.log("error updating booking",error)
@@ -58,7 +57,8 @@ export default function UpdateBookings() {
   const handleUpdateBooking = async () => {
     if(!gender || !services || !address || !requests ){
       Alert.alert("message",
-        "ALL FIELDS REQIRED",[{text:"Dismiss"
+        "ALL FIELDS REQIRED",
+        [{text:"Dismiss"
 
         }])
         return;

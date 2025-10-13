@@ -25,7 +25,7 @@ export default function APhistory() {
   // useeffect to get appointments from database
   useEffect(() =>{
     const handleFetchData =  () => {
-      const q =query(collection(db,"bookings"),
+    const q =query(collection(db,"bookings"),
     where("createdBy","==",currentUser?.uid))
 
       onSnapshot(q,(querySnapShot) => {
@@ -152,7 +152,7 @@ if (aphistory.length > 0  ) {
                   </View>
                 
                  <View>
-                  <Link href={{pathname:"updatebooking/[uid]",params:{uid:currentUser.uid}}} >
+                  <Link href={{pathname:"updatebooking/[uid]",params:{uid:item.id}}} >
                     {isLoading
                     ? 
                     <ActivityIndicator size="small" color="red" />
