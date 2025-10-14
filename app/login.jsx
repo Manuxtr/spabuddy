@@ -1,18 +1,14 @@
+import { auth } from "@/config/firebase.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
-import { SafeAreaView, ScrollView, Text,Image, TextInput, TouchableOpacity, View, Alert, Platform, ActivityIndicator } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { StyleSheet } from "react-native";
-import {useFormik} from "formik";
-import {signInWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth } from "@/config/firebase.config";
-import { KeyboardAvoidingView } from "react-native";
-import {signInValidation} from "../components/signin-validation-schema"
-import { useRouter } from "expo-router";
-import { onAuthStateChanged } from "firebase/auth";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useFormik } from "formik";
+import { useState } from "react";
+import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { signInValidation } from "../components/signin-validation-schema";
 
 
 
@@ -20,16 +16,21 @@ import { Link } from "expo-router";
 export default function Login() {
   const [isLoading,setisLoading] = useState(false)
   const router = useRouter();
+  const [showPassword,setShowPassword] = useState(false)
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
+  const authenticated = getAuth()
 
   // useeffect to prevent the user from going back after login
-  useEffect(() => {
-    onAuthStateChanged(auth,(user) => {
-      if(user){
-        router.replace("/(tabs)")
-      }
-    });
+  // useEffect(() => {
+  //   onAuthStateChanged(auth,(user) => {
+  //     if(user){
+  //       router.replace("/(tabs)")
+  //     }
+  //   });
     
-  })
+  // })
 
     const {handleBlur,handleChange,handleSubmit,touched,errors,values} = useFormik({
       initialValues:{email:"",password:""},
@@ -38,16 +39,22 @@ export default function Login() {
         try {
            await signInWithEmailAndPassword(auth,values.email,values.password)
           setisLoading(false)
+
+            // redirect home
+          if(authenticated.currentUser)
           Alert.alert("message",
-            "welcome back"
+            "welcome back",
+            router.replace("/(tabs)")
+          
           )
    
         } catch (error) {
           Alert.alert("MESSAGE",
-            "error try again",
+            "invalid email and password",
             [{text:"Dismiss"}]
-          )
-          
+          );
+          console.log(error)
+          setisLoading(false)
         }
       },
       validationSchema:signInValidation
@@ -123,7 +130,7 @@ export default function Login() {
                   width: 36,
                   height: 36,
                   }}
-                  source={require("../public/images/google.jpg")}/>
+                  source={require("../public/images/mygoogle.png")}/>
                   <Text style={mainStyles.signInText}>Google</Text>
                   </TouchableOpacity>
                   {/* OR */}
@@ -138,13 +145,36 @@ export default function Login() {
                 keyboardType="email-address"
                 style={mainStyles.loginForm}
                 placeholder="eg manuel@gmail.com"
+                placeholderTextColor="#888"
                 value={values.email}
                 onChangeText={handleChange("email")} 
                 onBlur={handleBlur("email")}/>
                 <Text>{errors.email}</Text>
               </View>
+ 
+              <View style ={mainStyles.passwordV}>
+                <View > 
+                    <TextInput
+                    secureTextEntry={!showPassword}
+                    keyboardType="default"
+                    style={mainStyles.input}
+                    placeholder=" Create Password"
+                    placeholderTextColor="#888"
+                    value={values.password}
+                    onChangeText={handleChange("password")}
+                    onBlur={handleBlur("password")}
+                    />
+                 
+                </View>
+                <View style={mainStyles.eye}>
+                      <TouchableOpacity onPress={togglePasswordVisibility}>
+                      <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={24} color="black" />
+                      </TouchableOpacity>
+                </View>
+                  
+              </View>
 
-              <View >
+              {/* <View >
                 <TextInput
                 secureTextEntry={true}
                 keyboardType="default"
@@ -153,7 +183,7 @@ export default function Login() {
                 value={values.password}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}/>
-               </View>
+               </View> */}
 
                 <View style={{paddingHorizontal:10, marginTop:40}}>
                 
