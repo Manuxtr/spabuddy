@@ -2,29 +2,93 @@ import { AuthContext } from "@/config/context.config";
 import { themeColors } from "@/utilities/maincolors.utils";
 import { mainStyles } from "@/utilities/mainstyle.utils";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addDoc, collection } from "firebase/firestore";
-import { useContext, useState } from "react";
-import { ActivityIndicator, Alert, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+import { useLocalSearchParams ,useRouter} from "expo-router";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import { db } from "../../config/firebase.config";
-// import { ImageBackground } from "react-native";
 
 
-export default function BookAp() {
-  const {currentUser} = useContext(AuthContext)
+export default function UpdateBookings() {
+  const {uid} = useLocalSearchParams();
+  const router = useRouter();
 
   const [date,setDate]=useState(new Date());
   const [showPicker,setShowPicker]=useState(false);
   const [mode,setMode]=useState("date");
-  const [name,setName]=useState("");
-  const [phone,setPhone]=useState("");
   const [address,setAddress]=useState("");
   const [requests,setRequests]=useState("");
   const [services,setServices]=useState("");
   const [gender,setGender]=useState("");
-  const [email,setEmail]=useState("");
-  const [loading,setLoading]=useState(false)
+  const [isloading,setIsLoading]=useState(false)
 
+
+
+  // to fetch user data from db
+  useEffect(() => {
+    const getBookingData = async () => {
+      try {
+        setIsLoading(true)
+        const docRef = doc(db,"bookings",uid);
+        const docSnap = await getDoc(docRef);
+      
+
+        if(docSnap.exists()){
+          const data = docSnap.data()
+          setGender(data.gender);
+          setServices(data.services);
+          setAddress(data.address);
+          setDate(data.date ? new Date(data.date) : new Date());
+          setRequests(data.requests)
+        }else{
+          Alert.alert("error","no event found")
+         
+        }
+      } catch (error) {
+        console.log("error updating booking",error)
+      }finally{
+        setIsLoading(false)
+      }
+    }
+    getBookingData()
+  },[uid])
+
+  const handleUpdateBooking = async () => {
+    if(!gender || !services || !address || !requests ){
+      Alert.alert("message",
+        "ALL FIELDS REQIRED",
+        [{text:"Dismiss"
+
+        }])
+        return;
+    }
+    try {
+      setIsLoading(true)
+      const docRef = doc(db,"bookings",uid);
+      await updateDoc(docRef,{
+        gender:gender,
+        services:services,
+        requests:requests,
+        address:address,
+        date:date.getTime(),
+        updatedAt:new Date().getTime()
+      })
+      setIsLoading(false)
+      Alert.alert("sucesss",
+        "booking updated",
+      [{text:"okay"}]
+    );
+    router.back()
+    } catch (error) {
+      console.log("ann error ocuured",error);
+      Alert.alert("error",
+        "failed to update booking"
+      );
+      setIsLoading(false)
+      
+    }
+  }
   // for dropdown list of services
   const servicesOptions=[
     {label:"Mens Cut",value:"Mens cut"},
@@ -62,44 +126,7 @@ export default function BookAp() {
     showMode("time")
   };
 
-  const handleBooking= async () => {
-    setLoading(true);
-    try {
-      const docRef=addDoc(collection(db,"bookings"),{
-      createdBy:currentUser.uid,  
-      address:address,
-      requests:requests,
-      gender:gender,
-      services:services,
-      date:date.toLocaleString()
-      });
 
-      setLoading(false)
-      Alert.alert(
-        "ALERT",
-        "Booking Successful",
-        [
-          {text:"Okay"},
-          {
-            text:"return",
-            onPress:()=> console.log("back to home")
-          }
-        ]
-      )
-  setName(""),
-  setPhone(""),
-  setEmail(""),
-  setAddress(""),
-  setRequests(""),
-  setGender(""),
-  setServices(""),
-  setDate(new Date()) // reset date to a Date object (or null) 
-    } catch (error) {
-      console.log("an error occured",error)
-      
-    }
-
-  }
 
   return (
 
@@ -115,10 +142,7 @@ export default function BookAp() {
               <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
             </View>
           
-            <ImageBackground 
-            // source={require("../../public/images/mybg.jpg")}
-            >
-               <View style={mainStyles.inputTextview}>
+            <View style={mainStyles.inputTextview}>
               {/* <View style={{justifyContent:"center"}}>
                <Text style={mainStyles.inputText}>Name:</Text>
                 <TextInput
@@ -153,9 +177,7 @@ export default function BookAp() {
                 onValueChange={(item) =>setGender(item)}
                 value={gender}
                 style={pickerSelectStyles.inputIOS}
-                placeholder={{ label: "Select your gender", value: null}}
-                placeholderTextColor="#888"
-                
+                placeholder={{ label: "Select your gender", value: gender}}
                 />
               </View>
              <View style={{justifyContent:"center"}}>
@@ -192,24 +214,20 @@ export default function BookAp() {
                 <TouchableOpacity
                   style={mainStyles.loginForm}
                   onChangeText={()=>setShowPicker(true)}>
-                  <Text className="text-2xl text-emerald-500">Appointment Date & Time:  {date.toLocaleDateString()} at {date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</Text>
+                  <Text className="text-2xl text-emerald-500">Appointment Date & Time:</Text>
                   {showPicker && (
                   <DateTimePicker
                   testID="dateTimePicker"
                   mode={mode}
                   value={date}
                   is24Hour={true}
-                  display="spinner"
+                  display="default"
                   onChange={onChange}/>
                   )}
                 </TouchableOpacity>
                 <View style={{display:"flex", flexDirection:"row", gap:80,justifyContent:"center",padding:20,alignItems:"center"}}>
-                  <TouchableOpacity 
-                   style={mainStyles.dateandtimepicker} 
-                    onPress={ShowDatepicker}>
-                    <Text className="font-bold text-center text-white">Select Date</Text></TouchableOpacity>
-                  <TouchableOpacity style={mainStyles.dateandtimepicker} onPress={ShowTimepicker}>
-                    <Text className="font-bold text-center text-white"> Select Time</Text></TouchableOpacity>
+                  <TouchableOpacity style={mainStyles.dateandtimepicker} onPress={ShowDatepicker}><Text className="font-bold text-center text-white">Select Date</Text></TouchableOpacity>
+                  <TouchableOpacity style={mainStyles.dateandtimepicker} onPress={ShowTimepicker}><Text className="font-bold text-center text-white"> Select Time</Text></TouchableOpacity>
                 </View>
               </View>
 
@@ -220,7 +238,7 @@ export default function BookAp() {
                 address.length > 6 &&
                 gender != null &&
                 services != null 
-                ?handleBooking : () => {}}
+                ? handleUpdateBooking : () => {}}
                style={{ height:54,backgroundColor:themeColors.darkGreen,padding:2, borderRadius:100,justifyContent:"center", alignItems: "center",marginTop:30}}>           
                 <Text style={{
                   fontFamily:"Raleway-Regular",
@@ -228,12 +246,11 @@ export default function BookAp() {
                   color:"white",
                   fontWeight:800,
                  textAlign:"center"
-                 }} >Book Appointment
+                 }} >update Appointment
                 </Text>  
-                {loading === true && <ActivityIndicator size="large" color="red"/>}     
+                {isloading=== true && <ActivityIndicator size="large" color="red"/>}     
               </TouchableOpacity>
-            </View> 
-            </ImageBackground>
+            </View>
           </ScrollView> 
         </SafeAreaView>
    {/* </SafeAreaProvider> */}
@@ -242,38 +259,26 @@ export default function BookAp() {
 }
 
 const pickerSelectStyles = StyleSheet.create({
- inputIOS: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderWidth: 1,
-        borderColor: '#ccc', // A visible border helps confirm size/placement
-        borderRadius: 8,
-        color: 'black',
-        paddingRight: 30, // To make space for the arrow icon
-        height: 50,       // Explicit height is essential
-        // backgroundColor: 'white', // Ensure it has a background
-    },
-    // The placeholder style is needed to ensure text is visible when no value is selected
-    placeholder: {
-        color: '#888', // Placeholder color for visibility
-    },
-    // The main container style, often mirrors the TextInput style
-    viewContainer: {
-        // You might need to add padding or margin here if it's too close to other elements
-        marginVertical: 10, 
-    },
-
-    // Optional: Android styling for completeness
-    inputAndroid: {
-        fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 8,
-        color: 'black',
-        paddingRight: 30,
-        height: 50,
-    },
-});
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+    backgroundColor: '#fff', // Added a background color for visibility
+    height: 50,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+})

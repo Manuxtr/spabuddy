@@ -1,8 +1,13 @@
 
 import { themeColors } from "@/utilities/maincolors.utils";
 import { useFonts } from "expo-font";
+<<<<<<< HEAD
 import { Link,useRouter } from "expo-router";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+=======
+import { Link } from "expo-router";
+import { Image, StyleSheet, Text, View } from "react-native";
+>>>>>>> master
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { screenWidth } from "./(tabs)";
 
@@ -26,6 +31,7 @@ const router = useRouter();
 
   return (
       <SafeAreaProvider>
+<<<<<<< HEAD
         <ScrollView 
        contentContainerStyle={{justifyContent:"space-evenly"}}
         style={{flex: 1,display:"flex",paddingVertical:1,paddingHorizontal:4,gap:1000}}>
@@ -35,6 +41,32 @@ const router = useRouter();
                 className="text-emerald-700 ">SPA BUDDY
               </Text>
               <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
+=======
+       <SafeAreaView style={{flex: 1,display:"flex",justifyContent:"space-evenly",paddingHorizontal:4}}>
+          <View>
+            <Text 
+              style={{fontSize:50, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
+              className="text-emerald-700 ">SPA BUDDY
+            </Text>
+            <Text className="text-2xl text-center text-emerald-600  font-mono font border-b-2 border-emerald-500 font-bold">Best  in selfcare!</Text>
+        </View>
+        <View className=" border-emerald-500 ">
+          <Text style={landPageStyle.landingText} className=" bg-emerald-600  ">AT SPA BUDDY SELFCARE JUST GOT BETTER YOU CAN     EXPLORE AND BOOK SELFCARE TREATMENTS IN MINUTES! FROM CUTE HAIRCUTS TO UNFORGETTABLE HAIR REVAMPS  DEEP TISSUE MASSAGE AND REJUVENATING FACIALS,YOUR NEXT PAMPARING SESSION IS JUST A TAP AWAY!
+          </Text>
+        </View>
+          <View className="bg-emerald-950">
+            <Link href={"/login"}>
+              <Image
+              source={require("../public/images/braiding.jpg")}
+              style={{
+              width: screenWidth,
+              height: 290,
+              resizeMode: "cover",
+              backgroundColor:themeColors.darkGreen                                 
+              }}
+            />
+            </Link>
+>>>>>>> master
           </View>
           <View className=" border-emerald-500 ">
             <Text style={landPageStyle.landingText} className=" bg-emerald-600  ">AT SPA BUDDY SELFCARE JUST GOT BETTER YOU CAN     EXPLORE AND BOOK SELFCARE TREATMENTS IN MINUTES! FROM CUTE HAIRCUTS TO UNFORGETTABLE HAIR REVAMPS  DEEP TISSUE MASSAGE AND REJUVENATING FACIALS,YOUR NEXT PAMPARING SESSION IS JUST A TAP AWAY!
@@ -66,7 +98,7 @@ const router = useRouter();
  const landPageStyle=StyleSheet.create({
   landingText:{
     fontFamily:"Raleway-Regular",
-    fontSize:24,
+    fontSize:20,
     color:"white",
     fontWeight:200,
     textAlign:"center"

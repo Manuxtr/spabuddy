@@ -1,39 +1,86 @@
+import { AuthContext } from "@/config/context.config";
 import { db } from "@/config/firebase.config";
-import { collection, getDocs, Timestamp } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { collection, deleteDoc, doc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Button, FlatList, ImageBackground, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Modal } from "react-native";
-import { ImageBackground } from "react-native";
-
+import { Link } from "expo-router";
 
 
 
 
 export default function APhistory() {
+
+  const {currentUser} = useContext(AuthContext)
   const [aphistory,setAPhistory]=useState([]);
   const [expandText,setExpandText]=useState(false);
   const [modalVisible,setModalVisible]=useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [userInfo,setUserInfo] = useState(false)
+  const [isLoading ,setIsLoading] = useState(false)
+
+
 
   // useeffect to get appointments from database
   useEffect(() =>{
-    const handleFetchData = async () => {
-      const recievedData = [];
-      const onSnap = await getDocs(collection(db,"bookings"))
-      onSnap.docs.forEach(doc => recievedData.push({
-        id:doc.id,
-        data:doc.data({date:Timestamp.now().toDate()})
-      }));
-      setAPhistory(recievedData)
+    const handleFetchData =  () => {
+    const q =query(collection(db,"bookings"),
+    where("createdBy","==",currentUser?.uid))
+
+      onSnapshot(q,(querySnapShot) => {
+        const recievedData = []
+        querySnapShot.forEach(doc => recievedData.push({
+          id:doc.id,
+          data:doc.data()
+  
+        }));
+        setAPhistory(recievedData)
+      })
     }
     handleFetchData()
   },[])
 
-if (aphistory.length > 0) {
+  // to get user info from signup
+  useEffect(() => {
+     const getUserInfo = async () => {
+      try {
+        const docSnap = await getDoc(doc(db,"users",currentUser.uid))
+        if (docSnap.exists()){
+          setUserInfo(docSnap.data())
+        }
+      } catch (error) {
+        console.log("error",error)
+      }
+    }
+    currentUser !== undefined && getUserInfo()
+  },[currentUser])
+  
+  const handleDeleteBooking = async (bookingId) => {
+    setIsLoading(true)
+
+    try {
+      await deleteDoc(doc(db,"bookings",bookingId))
+      Alert.alert("message",
+        "Booking deleted",
+        [{text:"okay"}])
+      setIsLoading(false)
+    } catch (error) {
+      Alert.alert("error","Action not completed try again",
+        [{text:"Dismis"}],
+        
+      )
+      setIsLoading(false)
+      console.log("error",error)
+
+    }
+  }
+
+if (aphistory.length > 0  ) {
 
     return (
     <SafeAreaProvider>
-      <SafeAreaView style={{flex:1,paddingHorizontal:5}}>
+      <SafeAreaView style={{flex:1,paddingHorizontal:10,paddingBottom:40 }}>
         <View>
           <Text 
             style={{fontSize:40, fontWeight:"bold", textAlign:"center", marginTop:20,fontFamily:"Chocolate Bar Demo",position:"fixed",top:0}}
@@ -47,14 +94,15 @@ if (aphistory.length > 0) {
           renderItem={({item}) => {
           return(
             <View style={{
-              height:350,
+              height:270,
               width:"100%",
               padding:4,
-              backgroundColor:"plum",
-              borderWidth:2,
+              backgroundColor:"white",
+              borderWidth:0.5,
               borderColor:"green", 
-              borderRadius:5,
-              marginVertical:9,
+              borderRadius:40,
+              marginVertical:40,
+              paddingHorizontal:30,
               shadowColor:"green",
               shadowOffset:{width:6,height:5},
               shadowOpacity:0.25,
@@ -66,11 +114,11 @@ if (aphistory.length > 0) {
               </View>
               <View className="flex-row  gap-6">
                 <Text className="text-2xl font-semibold">Name:</Text>
-                <Text className="text-2xl  ">{item.data.name}</Text>
+                <Text className="text-2xl  ">{userInfo.fullname}</Text>
               </View>
               <View className="flex-row  gap-6">
                 <Text className="text-2xl font-semibold">Phone:</Text>
-                <Text className="text-2xl  ">{item.data.phone}</Text>
+                <Text className="text-2xl  ">{userInfo.phone}</Text>
               </View>
                 <View className="flex-row  gap-6">
                   <Text className="text-2xl font-semibold">Gender:</Text>
@@ -84,18 +132,49 @@ if (aphistory.length > 0) {
                   <Text className="text-2xl font-semibold">Services:</Text>
                   <Text className="text-2xl  ">{item.data.services}</Text>
                </View>
-               
-                <Modal visible={modalVisible}
-                transparent={true}
-                animationType="slide"
-               
-                >
-                  <Pressable>
-                    <Text>VIEW HISTORY</Text>
+
+                <View className="flex flex-row  gap-6 justify-between" >
+                    <Pressable onPress= {() => setSelectedItem(item)}>
+                    <Text className="text-2xl font-semibold text-green-800" >Show more info</Text>
                   </Pressable>
+                </View>
+
+                <View style={{display:"flex",flexDirection:"row",gap:30}}>
+                  <View>
+                   <TouchableOpacity onPress={() => handleDeleteBooking(item.id)}>
+                    {isLoading
+                    ? 
+                    <ActivityIndicator size="small" color="red" />
+                    :
+                    <MaterialIcons name="delete" size={24} color="green" />}
+                  </TouchableOpacity>
+
+                  </View>
+                
+                 <View>
+                  <Link href={{pathname:"updatebooking/[uid]",params:{uid:item.id}}} >
+                    {isLoading
+                    ? 
+                    <ActivityIndicator size="small" color="red" />
+                    :
+                    <MaterialIcons name="edit-note" size={24} color="green" />}
+                  </Link>
+
+                 </View>
+                </View>
+
+                <Modal
+                style={{}}
+                visible={selectedItem?.id === item.id}
+                onRequestClose={() => setSelectedItem(null)}
+                  transparent={false}
+                  animationType="slide">
+                 
+                 
+
                   <View className="flex-row  gap-6">
                   <Text className="text-2xl font-semibold">Email:</Text>
-                    <Text className="text-2xl  ">{item.data.email}</Text>
+                    <Text className="text-2xl  ">{userInfo.email}</Text>
                   </View>
                 
                   <View style={{flexDirection:"row",gap:6}}>
@@ -120,6 +199,7 @@ if (aphistory.length > 0) {
                     }
                     </Pressable>
                   </View>
+                  <Button title="Hide" onPress={() => setSelectedItem(null)}/>
 
                 </Modal>
              
@@ -130,6 +210,7 @@ if (aphistory.length > 0) {
            }}
             keyExtractor={(item) => item.id}
           />
+
        </ImageBackground>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -141,6 +222,12 @@ if (aphistory.length > 0) {
       <SafeAreaProvider>
         <SafeAreaView style={styles.emptyWrapper}> 
           <ActivityIndicator size="large" color="green"/>
+          <Text>No Bookings Found</Text>
+          <View >
+            <Link href={"/(tabs)/appointment"}>
+            <Text className="text-emerald-700">BOOK NOW</Text>
+            </Link>
+          </View>
         </SafeAreaView>
     </SafeAreaProvider>
   )

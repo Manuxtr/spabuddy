@@ -43,6 +43,7 @@ export default function Index() {
             return(
               <View className="">
                 <View>
+                  <Link href="/(tabs)/appointment">
                   <Image
                     source={item.img}
                     alt="services photo"
@@ -53,6 +54,7 @@ export default function Index() {
                     
                     }}
                 />
+                </Link>
                 </View>
                 <View style={{ justifyContent:"center",alignItems:"center",paddingTop:15,marginBottom:1}}>
                   <Link href={"/(tabs)/appointment"} className="text-center text-emerald-500 ">

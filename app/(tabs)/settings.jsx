@@ -1,29 +1,27 @@
-import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { auth, db } from "@/config/firebase.config";
-import { signOut } from "firebase/auth";
-import { useState,useEffect } from "react";
-import { ActivityIndicator } from "react-native";
-import { useContext } from "react";
 import { AuthContext } from "@/config/context.config";
-import { useRouter } from "expo-router";
+import { auth, db } from "@/config/firebase.config";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Link, useRouter } from "expo-router";
+import { signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function Settings() {
-  const {currentUser,fullname,phone} = useContext(AuthContext);
+ 
   const [isLoading,setisLoading] = useState(false);
-
+  const [userInfo,setUserInfo] = useState(false)
   const router = useRouter();
+   const {currentUser} = useContext(AuthContext);
 
-  const handleSignOut = async () => {
+     const handleSignOut = async () => {
     setisLoading(true);
     try {
       await signOut(auth)
-      .then( () => {
-        router.replace("/login")
-      })
+      router.replace("/login")
+      setisLoading(false)
     } catch (error) {
       Alert.alert("message",
         "an error occured",
@@ -34,6 +32,26 @@ export default function Settings() {
       
     }
   }
+
+  useEffect(() => {
+     const getUserInfo = async () => {
+      try {
+        const docRef = doc(db,"users",currentUser.uid);
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()){
+          setUserInfo(docSnap.data())
+        }
+      } catch (error) {
+        console.log("error",error)
+      }
+    }
+   if(currentUser && currentUser.uid){
+    getUserInfo()
+   }
+  },[currentUser])
+  
+
+
 
 
   return (
@@ -52,17 +70,17 @@ export default function Settings() {
               source={require("../../public/images/user.png")}
               alt="display-pic-demo"
               />
-              <Text className="font-bold text-lg">{fullname}</Text>
-              <Text className="text-stone-800 tracking-widest">@bomajj</Text>
+              <Text className="font-bold text-lg">{userInfo.fullname}</Text>
+              <Text className="text-stone-800 tracking-widest">{userInfo.username}</Text>
             </View>
             <View className="flex p-3 rounded-md " style={{marginHorizontal:20}}>
               <View className="flex flex-row justify-evenly mb-3">
-                <Text className="text-stone-800 tracking-wider text-lg">Email</Text>
+                <Text className="text-stone-800 tracking-wider text-lg">Account Email:</Text>
                 <Text className="text-stone-800 tracking-wider text-md">{currentUser?.email }</Text>
               </View>
                <View className="flex flex-row justify-evenly mb-3">
                 <Text className="text-stone-800 tracking-wider text-lg">phone:</Text>
-                <Text className="text-stone-800 tracking-wider text-md">{phone}</Text>
+                <Text className="text-stone-800 tracking-wider text-md">{userInfo.phone}</Text>
               </View>
             </View>
             <View className="flex flex-row items-center justify-evenly mt-20 ">
@@ -76,9 +94,9 @@ export default function Settings() {
               </Link>
               <Pressable onPress={handleSignOut} className="flex flex-row items-center px-3 py-2 rounded-md bg-red-700 gap-3">
                  <MaterialIcons name="logout" size={44} color="white" />
-                  {isLoading ? <ActivityIndicator size="small" color="white"/>
+                  {isLoading ? <ActivityIndicator size="small" color="red"/>
                   :
-                    <Text className="text-white text-lg">Log Out</Text>}
+                  <Text className="text-white text-lg">Log Out</Text>}
               </Pressable>
 
             </View>
